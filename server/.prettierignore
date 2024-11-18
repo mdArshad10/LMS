@@ -1,0 +1,15 @@
+# Ignore all files in the 'dist' directory
+dist/*
+
+# Ignore generated files
+*.min.js
+*.min.css
+
+# Ignore vendor files
+vendor/*
+
+# Ignore specific files
+README.md
+LICENSE
+package-lock.json
+package.json
