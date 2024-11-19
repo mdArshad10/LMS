@@ -19,7 +19,7 @@ const userSchema = new mongoose.Schema(
 		},
 		role: {
 			type: String,
-			enum: ['instructor', 'student'],
+			enum: ['instructor', 'student', 'admin'],
 			default: 'student',
 		},
 		enrolledCourses: [
@@ -58,4 +58,4 @@ userSchema.methods.generateToken = async function () {
 	});
 };
 
-export const User = mongoose.model('User', userSchema);
+export const Users = mongoose.model('User', userSchema);
