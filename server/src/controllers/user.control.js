@@ -12,7 +12,7 @@ const cookieOption = {
 	sameSite: 'strict',
 };
 
-// @DESC: Register the new user
+// @DESC: Register the new user ✅
 // @METHOD: [POST]   /api/v1/users/signup
 // @ACCESS: public
 const registerUser = AsyncHandler(async (req, res, next) => {
@@ -35,7 +35,7 @@ const registerUser = AsyncHandler(async (req, res, next) => {
 	});
 	const token = await newUser.generateToken();
 
-	const { password: hashedPassword, ...userDate } = newUser._doc();
+	const { password: hashedPassword, ...userDate } = newUser._doc;
 	res.status(StatusCodes.CREATED).cookie('token', token, cookieOption).json({
 		success: true,
 		message: 'User created successfully',
@@ -43,7 +43,7 @@ const registerUser = AsyncHandler(async (req, res, next) => {
 	});
 });
 
-// @DESC: login the user
+// @DESC: login the user ✅
 // @METHOD: [POST]   /api/v1/users/login
 // @ACCESS: public
 const loginUser = AsyncHandler(async (req, res, next) => {
@@ -61,7 +61,7 @@ const loginUser = AsyncHandler(async (req, res, next) => {
 	}
 
 	const matchPassword = await existUser.isMatchPassword(password);
-	if (matchPassword) {
+	if (!matchPassword) {
 		return next(
 			new ErrorHandler(
 				'Incorrect User or Password',
@@ -71,7 +71,7 @@ const loginUser = AsyncHandler(async (req, res, next) => {
 	}
 
 	const token = await existUser.generateToken();
-	const { password: hashedPassword, ...userDate } = existUser._doc();
+	const { password: hashedPassword, ...userDate } = existUser._doc;
 	res.status(StatusCodes.OK).cookie('token', token, cookieOption).json({
 		success: true,
 		message: 'User logged in successfully',
@@ -79,17 +79,17 @@ const loginUser = AsyncHandler(async (req, res, next) => {
 	});
 });
 
-// @DESC: logout the user
+// @DESC: logout the user✅
 // @METHOD: [GET]   /api/v1/users/logout
 // @ACCESS: private
 const logoutUser = AsyncHandler(async (req, res, next) => {
-	res.status(StatusCodes.OK).cookie('token', null, cookieOption).json({
+	res.status(StatusCodes.OK).clearCookie('token').json({
 		success: true,
 		message: 'User logged out successfully',
 	});
 });
 
-// @DESC: get the user
+// @DESC: get the user✅
 // @METHOD: [GET]   /api/v1/users
 // @ACCESS: private
 const getUser = AsyncHandler(async (req, res, next) => {
@@ -106,8 +106,11 @@ const getUser = AsyncHandler(async (req, res, next) => {
 // @ACCESS: private
 const updateUser = AsyncHandler(async (req, res, next) => {
 	const { name } = req.body;
-	const profileUrl = req.file;
+	const profileUrl = req.file?.path;
 	// check the file
+	if (!req.file && !profileUrl) {
+		return next(new ErrorHandler('file is not present'));
+	}
 
 	const fileResponse = await fileUploadInCloudinary(profileUrl);
 	if (!fileResponse) {
@@ -123,7 +126,7 @@ const updateUser = AsyncHandler(async (req, res, next) => {
 		{
 			$set: {
 				name,
-				profile: {
+				photoUrl: {
 					public_id: fileResponse.public_id,
 					url: fileResponse.url,
 				},

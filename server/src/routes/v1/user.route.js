@@ -12,21 +12,21 @@ import { upload } from '../../utils/multer.js';
 
 const router = Router();
 
-// register the user
+// register the user ✅
 router.route('/signup').post(registerUser);
 
-// login the user
+// login the user ✅
 router.route('/login').post(loginUser);
 
-// logout the user
-router.route('/logout').post(logoutUser);
+// logout the user ✅
+router.route('/logout').post(verifyUser, logoutUser);
 
 // update the user
 router
 	.route('/')
-	// get a particular user
-	.get(getUser)
+	// get a particular user✅
+	.get(verifyUser, getUser)
 	// update the user
-	.put(updateUser);
+	.put(verifyUser, upload.single('avatar'), updateUser);
 
 export default router;

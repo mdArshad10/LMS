@@ -2,4 +2,6 @@ import { Router } from 'express';
 
 const router = Router();
 
-router.route('/upload-video').post();
+// router.route('/upload-video').post();
+
+export default router;

@@ -7,7 +7,7 @@ export const dbConnection = async () => {
 			`${MONGO_URL}/${DATABASE_NAME}`,
 		);
 		console.log(
-			`MongoDB connected !! DB HOST: ${dbInstance.connection.host}`,
+			`MongoDB connected !! DB HOST: ${dbInstance.connection.port}`,
 		);
 	} catch (error) {
 		console.log('MONGODB connection FAILED ', error.message);
