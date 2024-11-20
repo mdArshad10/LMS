@@ -11,18 +11,39 @@ import {
 } from "./ui/card";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
+import { Loader2 } from "lucide-react";
+import { useRegisterMutation } from "@/features/api/authApiSlice";
+import { useEffect } from "react";
+import { toast } from "sonner";
 
 const Signup = () => {
+  const [
+    userRegister,
+    { error: registerError, isLoading, isSuccess, data: registerData },
+  ] = useRegisterMutation();
   const {
     register,
     handleSubmit,
     formState: { errors },
     reset,
   } = useForm();
+
   const signupHandler = async (data) => {
     console.log(data);
+
     reset();
   };
+
+  useEffect(() => {
+    if (isSuccess && registerData) {
+      toast.success(userRegister.message);
+    }
+
+    if (registerError) {
+      toast.error(registerError.message);
+    }
+  }, [isLoading, registerError, isSuccess, registerData]);
+
   return (
     <form onSubmit={handleSubmit(signupHandler)}>
       <Card>
@@ -77,7 +98,16 @@ const Signup = () => {
           </div>
         </CardContent>
         <CardFooter>
-          <Button type="submit">Login</Button>
+          <Button disabled={isLoading} type="submit">
+            {isLoading ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" /> ... Please
+                wait
+              </>
+            ) : (
+              "Signup"
+            )}
+          </Button>
         </CardFooter>
       </Card>
     </form>

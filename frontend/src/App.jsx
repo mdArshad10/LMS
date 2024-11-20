@@ -1,16 +1,12 @@
+// import "./App.css";
+// import Navbar from "./components/Navbar";
+// import MainLayout from "./layout/MainLayout";
 
-import './App.css'
+// import LoginPage from "./pages/LoginPage";
+// import HeroSection from "./components/student/HeroSection";
 
-import LoginPage from './pages/LoginPage'
+// function App() {
+//   return <LoginPage />;
+// }
 
-function App() {
-  
-
-  return (
-    <main>
-     <LoginPage/>
-    </main>
-  )
-}
-
-export default App
+// export default App;

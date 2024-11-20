@@ -1,3 +1,4 @@
+import { userLoggedIn } from "../authSlice";
 import { basicApi } from "../basicApiSlice";
 
 const authApiSlice = basicApi.injectEndpoints({
@@ -15,8 +16,40 @@ const authApiSlice = basicApi.injectEndpoints({
         method: "POST",
         body: data,
       }),
+
+      async onQueryStarted(_, { queryFulfilled, dispatch }) {
+        try {
+          const response = await queryFulfilled;
+          dispatch(userLoggedIn({ User: response.data.user }));
+        } catch (error) {}
+      },
+    }),
+    logout: build.mutation({
+      query: () => ({
+        url: "/users/login",
+        method: "GET",
+      }),
+    }),
+    updateProfile: build.mutation({
+      query: (data) => ({
+        url: "/users",
+        method: "PUT",
+        body: data,
+      }),
+    }),
+    getProfile: build.query({
+      query: () => ({
+        url: "/users",
+        method: "GET",
+      }),
     }),
   }),
 });
 
-export const { useLoginMutation, useRegisterMutation } = authApiSlice;
+export const {
+  useLoginMutation,
+  useRegisterMutation,
+  useLogoutMutation,
+  useUpdateProfileMutation,
+  useGetProfileQuery,
+} = authApiSlice;

@@ -10,13 +10,40 @@ import {
 import { Button } from "./ui/button";
 import { Label } from "./ui/label";
 import { Input } from "./ui/input";
+import { useLoginMutation } from "@/features/api/authApiSlice";
+import { Loader2 } from "lucide-react";
+import { useEffect } from "react";
+import { toast } from "sonner";
 
 const Login = () => {
-  const { handleSubmit, register, reset, formState:{errors} } = useForm();
+  const {
+    handleSubmit,
+    register,
+    reset,
+    formState: { errors },
+  } = useForm();
+
+  const [
+    login,
+    { isLoading, error: loginUserError, data: loginUserData, isSuccess },
+  ] = useLoginMutation();
+
   const handleLoginSubmit = async (data) => {
     console.log(data);
+
     reset();
   };
+
+  useEffect(() => {
+    if (isSuccess && loginUserData) {
+      toast.success(loginUserData.message);
+    }
+
+    if (loginUserError) {
+      toast.error(loginUserError.message);
+    }
+  }, [isSuccess, loginUserError, loginUserData]);
+
   return (
     <form onSubmit={handleSubmit(handleLoginSubmit)}>
       <Card>
@@ -57,7 +84,16 @@ const Login = () => {
           </div>
         </CardContent>
         <CardFooter>
-          <Button type="submit">Login</Button>
+          <Button disabled={isLoading} type="submit">
+            {isLoading ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" /> ... Please
+                wait
+              </>
+            ) : (
+              "Login"
+            )}
+          </Button>
         </CardFooter>
       </Card>
     </form>
