@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Card,
   CardContent,
@@ -21,8 +21,35 @@ import {
   SelectValue,
 } from "../ui/select";
 import RichTextEditor from "../RichTextEditor";
+import {
+  useEditCourseMutation,
+  useGetCourseByIdQuery,
+} from "@/features/api/courseApiSlice";
+import { toast } from "sonner";
+import { useNavigate, useParams } from "react-router-dom";
 
 const CourseTab = () => {
+  const [input, setInput] = useState({
+    description: "",
+    courseThumbnailImage: "",
+  });
+  const [previewThumbnail, setPreviewThumbnail] = useState("");
+
+  const navigate = useNavigate();
+  const params = useParams();
+  const courseId = params.courseId;
+
+  const {
+    data: courseDataGetByCourseId,
+    isLoading: loadingCourseByCourseId,
+    refetch,
+  } = useGetCourseByIdQuery(courseId, { refetchOnMountOrArgChange: true });
+
+  const [editCourse, { isSuccess, isLoading, data, isError, error }] =
+    useEditCourseMutation();
+
+  // const existingCourseDetail = courseDataGetByCourseId?.course;
+
   const isPublished = true;
   const {
     register,
@@ -30,12 +57,45 @@ const CourseTab = () => {
     handleSubmit,
     formState: { errors },
   } = useForm();
-  const isLoading = false;
+  // const isLoading = false;
+
+  // set the file url
+  const selectThumbnail = (e) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setInput((prev) => ({ ...prev, courseThumbnailImage: file }));
+      // convert data to url for thumbnail
+      const fileReader = new FileReader();
+      fileReader.onload = () => setPreviewThumbnail(fileReader.result);
+      fileReader.readAsDataURL(file);
+    }
+  };
+
   const courseUpdateHandler = async (data) => {
     // Call your API to update the course here
     console.log(data);
+    const formData = new FormData();
+    formData.append("courseTitle", data.courseTitle);
+    formData.append("subTitle", data.subTitle);
+    formData.append("description", input.description);
+    formData.append("category", data.category);
+    formData.append("category", data.category);
+    formData.append("courseLevel", data.courseLevel);
+    formData.append("coursePrice", data.price);
+    formData.append("courseThumbnail", input.courseThumbnailImage);
     reset();
   };
+
+  useEffect(() => {
+    if (isSuccess) {
+      toast.success(data.message || "Course updated successfully");
+      refetch();
+    }
+    if (isError) {
+      toast.error(error.message || "Failed to update the course");
+    }
+  }, [isSuccess, isError]);
+
   return (
     <Card>
       <CardHeader className="flex flex-row justify-between">
@@ -53,13 +113,16 @@ const CourseTab = () => {
         </div>
       </CardHeader>
       <CardContent>
-        <form onSubmit={handleSubmit()}>
+        <form onSubmit={handleSubmit(courseUpdateHandler)}>
           <div className="space-y-4 mt-4">
             <div>
               <Label>Title</Label>
               <Input
                 type="text"
                 {...register("courseTitle")}
+                // defaultValue={
+                //   existingCourseDetail ? existingCourseDetail.title : ""
+                // }
                 placeholder="Ex. Fullstack developer"
               />
             </div>
@@ -144,17 +207,19 @@ const CourseTab = () => {
               <Label>Course Thumbnail</Label>
               <Input
                 type="file"
-                // onChange={selectThumbnail}
+                onChange={selectThumbnail}
                 accept="image/*"
                 className="w-fit"
               />
-              {/* {previewThumbnail && (
+              {previewThumbnail && (
                 <img
                   src={previewThumbnail}
                   className="e-64 my-2"
                   alt="Course Thumbnail"
+                  width={300}
+                  height={150}
                 />
-              )} */}
+              )}
             </div>
 
             <div className="flex gap-2">

@@ -13,6 +13,8 @@ import {
 import { useNavigate } from "react-router-dom";
 import { useGetCreatorCourseQuery } from "@/features/api/courseApiSlice";
 import { toast } from "sonner";
+import { Badge } from "@/components/ui/badge";
+import { Edit } from "lucide-react";
 
 const invoices = [
   {
@@ -86,11 +88,17 @@ const CourseTable = () => {
         <TableBody>
           {invoices.map((invoice) => (
             <TableRow key={invoice.invoice}>
-              <TableCell className="font-medium">{invoice.invoice}</TableCell>
-              <TableCell>{invoice.paymentStatus}</TableCell>
+              <TableCell className="font-medium">
+                {invoice.invoice || "NA"}
+              </TableCell>
+              <TableCell>
+                <Badge>{invoice.paymentStatus ? "published" : "Draft"}</Badge>
+              </TableCell>
               <TableCell>{invoice.paymentMethod}</TableCell>
               <TableCell className="text-right">
-                {invoice.totalAmount}
+                <Button size="sm" variant="ghost">
+                  <Edit />
+                </Button>
               </TableCell>
             </TableRow>
           ))}

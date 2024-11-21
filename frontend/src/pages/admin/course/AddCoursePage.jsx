@@ -11,18 +11,29 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useState } from "react";
+import { useForm } from "react-hook-form";
 
 const AddCoursePage = () => {
-  const [courseTitle, setCourseTitle] = useState("");
-  const [category, setCategory] = useState("");
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm();
+
   const isLoading = false;
 
   const getSelectedCategory = (value) => {
     setCategory(value);
   };
-  
+
+  const createCourseHandler = async (data) => {
+    console.log(data);
+    reset();
+  };
+
   return (
-    <div className="flex-1 mb-10">
+    <form onSubmit={handleSubmit(createCourseHandler)} className="flex-1 mb-10">
       <div className="mb-4">
         <h1 className="font-bold text-xl">
           Lets add course, add some basic course details for your new course
@@ -37,14 +48,17 @@ const AddCoursePage = () => {
           <Label>Title</Label>
           <Input
             type="text"
-            value={courseTitle}
-            onChange={(e) => setCourseTitle(e.target.value)}
+            // value={courseTitle}
+            // onChange={(e) => setCourseTitle(e.target.value)}
+            {...register("courseTitle", {
+              required: "Course's Tile is required",
+            })}
             placeholder="Your Course Name"
           />
         </div>
         <div>
           <Label>Category</Label>
-          <Select onValueChange={getSelectedCategory}>
+          <Select {...register("category")}>
             <SelectTrigger className="w-[180px]">
               <SelectValue placeholder="Select a category" />
             </SelectTrigger>
@@ -85,7 +99,7 @@ const AddCoursePage = () => {
           </Button>
         </div>
       </div>
-    </div>
+    </form>
   );
 };
 
