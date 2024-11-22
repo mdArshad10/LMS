@@ -101,7 +101,7 @@ const getUser = AsyncHandler(async (req, res, next) => {
 	});
 });
 
-// @DESC: update the user detail
+// @DESC: update the user detail ✅
 // @METHOD: [PUT]   /api/v1/users
 // @ACCESS: private
 const updateUser = AsyncHandler(async (req, res, next) => {

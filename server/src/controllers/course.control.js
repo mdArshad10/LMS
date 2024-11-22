@@ -8,12 +8,13 @@ import {
 } from '../utils/cloudinary.js';
 import { Lectures } from '../models/lecture.model.js';
 
-// @DESC: instructor create a new course
+// @DESC: instructor create a new course ✅
 // @METHOD: [POST]   /api/v1/courses/
 // @ACCESS: private
 const createCourse = AsyncHandler(async (req, res, next) => {
 	const { courseTitle, category } = req.body;
 
+	// TODO: same user not created same course
 	const newCourse = await Courses.create({
 		courseTitle,
 		category,
@@ -27,16 +28,20 @@ const createCourse = AsyncHandler(async (req, res, next) => {
 	});
 });
 
-// @DESC: get all publish courses
+// @DESC: get all publish courses ✅
 // @METHOD: [GET]   /api/v1/courses/published
 // @ACCESS: private
 const getPublishedCourse = AsyncHandler(async (req, res, next) => {
-	const courses = await Courses.find({ isPublished: false }).populate({
+	const courses = await Courses.find({ isPublished: true }).populate({
 		path: 'creator',
 		select: 'name photoUrl',
 	});
-	if (!courses) {
-		return next(new Error('No courses found', StatusCodes.NOT_FOUND));
+	if (courses.length == 0) {
+		return res.status(StatusCodes.OK).json({
+			success: true,
+			message: 'No published courses found',
+			courses: [],
+		});
 	}
 	return res.status(StatusCodes.OK).json({
 		success: true,
@@ -45,7 +50,52 @@ const getPublishedCourse = AsyncHandler(async (req, res, next) => {
 	});
 });
 
-// @DESC: get all courses of creator
+// @DESC: search the  courses ✅
+// @METHOD: [GET]   /api/v1/courses/published
+// @ACCESS: private
+const searchCourse = AsyncHandler(async (req, res, next) => {
+	const { query = '', categories = [], sortByPrice = '' } = req.query;
+
+	// create search query
+	const searchCriteria = {
+		isPublished: true,
+		$or: [
+			{
+				courseTitle: { $regex: query, $options: 'i' },
+			},
+			{
+				subTitle: { $regex: query, $options: 'i' },
+			},
+			{
+				category: { $regex: categories, $options: 'i' },
+			},
+		],
+	};
+
+	// if categories are selected
+	if (categories.length > 0) {
+		searchCriteria.category = { $in: categories };
+	}
+	// define sorting order
+	const sortOptions = {};
+	if (sortByPrice === 'low') {
+		sortOptions.coursePrice = 1;
+	} else if (sortByPrice === 'high') {
+		sortOptions.coursePrice = -1;
+	}
+
+	let courses = await Courses.find(searchCriteria)
+		.populate({ path: 'creator', select: 'name photoUrl' })
+		.sort(sortOptions);
+
+	return res.status(StatusCodes.OK).json({
+		success: true,
+		message: 'Courses fetched successfully',
+		courses: courses || [],
+	});
+});
+
+// @DESC: get all courses of creator ✅
 // @METHOD: [GET]   /api/v1/courses/
 // @ACCESS: private/instructor
 // TODO: adding the pagination and search parameters
@@ -53,7 +103,7 @@ const instructorGetAllCourses = AsyncHandler(async (req, res, next) => {
 	const courses = await Courses.find({ creator: req.user.id }).sort({
 		createdAt: -1,
 	});
-	if (courses.isEmpty()) {
+	if (courses.length === 0) {
 		return res.status(StatusCodes.NOT_FOUND).json({
 			success: true,
 			message: 'No courses found',
@@ -67,8 +117,8 @@ const instructorGetAllCourses = AsyncHandler(async (req, res, next) => {
 	});
 });
 
-// @DESC: creator edit the course
-// @METHOD: [PUT]   /api/v1/courses/:courseId
+// @DESC: creator edit the course ✅
+// @METHOD: [PUT]   /api/v1/courses/:courseId/edit
 // @ACCESS: private/instructor
 const editCourse = AsyncHandler(async (req, res, next) => {
 	const { courseId } = req.params;
@@ -81,7 +131,7 @@ const editCourse = AsyncHandler(async (req, res, next) => {
 		coursePrice,
 	} = req.body;
 	const thumbnail = req.file;
-	const existCourse = await Courses.findById(id);
+	const existCourse = await Courses.findById(courseId);
 	if (!existCourse) {
 		return next(
 			new ErrorHandler('Course is not found', StatusCodes.NOT_FOUND),
@@ -89,12 +139,12 @@ const editCourse = AsyncHandler(async (req, res, next) => {
 	}
 	let courseNewThumbnail;
 	if (thumbnail) {
-		if (existCourse.courseThumbnail) {
+		if (existCourse.courseThumbnail?.public_id) {
 			await deleteMediaFromCloudinary(
 				existCourse.courseThumbnail?.public_id,
 			);
 		}
-		courseNewThumbnail = await fileUploadInCloudinary(thumbnail);
+		courseNewThumbnail = await fileUploadInCloudinary(thumbnail.path);
 	}
 	const courseUpdatedData = {
 		courseTitle,
@@ -105,7 +155,7 @@ const editCourse = AsyncHandler(async (req, res, next) => {
 		coursePrice,
 		courseThumbnail: {
 			public_id: courseNewThumbnail?.public_id,
-			url: courseNewThumbnail?.secure_url,
+			url: courseNewThumbnail?.url,
 		},
 	};
 
@@ -122,12 +172,13 @@ const editCourse = AsyncHandler(async (req, res, next) => {
 	});
 });
 
-// @DESC: creator edit the course
+// @DESC: creator edit the course ✅
 // @METHOD: [GET]   /api/v1/courses/:courseId
 // @ACCESS: private/instructor
 const getCourseById = AsyncHandler(async (req, res, next) => {
 	const { courseId } = req.params;
 	const course = await Courses.findById(courseId);
+
 	if (!course) {
 		return next(
 			new ErrorHandler('Course is not found', StatusCodes.NOT_FOUND),
@@ -141,7 +192,7 @@ const getCourseById = AsyncHandler(async (req, res, next) => {
 	});
 });
 
-// @DESC: creator create a lecture
+// @DESC: creator create a lecture ✅
 // @METHOD: [POST]   /api/v1/courses/:courseId/lecture
 // @ACCESS: private/instructor
 const createLecture = AsyncHandler(async (req, res, next) => {
@@ -166,7 +217,7 @@ const createLecture = AsyncHandler(async (req, res, next) => {
 	});
 });
 
-// @DESC: get a lecture of course
+// @DESC: get a lecture of course ✅
 // @METHOD: [GET]   /api/v1/courses/:courseId/lecture
 // @ACCESS: private/instructor
 const getCourseLecture = AsyncHandler(async (req, res, next) => {
@@ -186,7 +237,7 @@ const getCourseLecture = AsyncHandler(async (req, res, next) => {
 	});
 });
 
-// @DESC: get a lecture of course
+// @DESC: update a lecture of course ✅
 // @METHOD: [PUT]   /api/v1/courses/:courseId/lecture/:lectureId
 // @ACCESS: private/instructor
 const editLecture = AsyncHandler(async (req, res, next) => {
@@ -200,7 +251,7 @@ const editLecture = AsyncHandler(async (req, res, next) => {
 	}
 	// update teh lectures
 	if (lectureTitle) existLecture.lectureTitle = lectureTitle;
-	if (videoInfo) existLecture.videoUrl = videoUrl;
+	if (videoUrl) existLecture.videoUrl = videoUrl;
 	if (isPreviewFree) existLecture.isPreviewFree = isPreviewFree;
 
 	await existLecture.save();
@@ -215,7 +266,7 @@ const editLecture = AsyncHandler(async (req, res, next) => {
 	});
 });
 
-// @DESC: remove the lecture
+// @DESC: remove the lecture ✅
 // @METHOD: [DELETE]   /api/v1/courses/lecture/:lectureId
 // @ACCESS: private/instructor
 const removeLecture = AsyncHandler(async (req, res, next) => {
@@ -228,18 +279,20 @@ const removeLecture = AsyncHandler(async (req, res, next) => {
 		);
 	}
 
-	// remove the file from cloudinary
-	const response = await deleteMediaFromCloudinary(
-		lecture.videoUrl.public_id,
-		'video',
-	);
-	if (!response) {
-		return next(
-			new ErrorHandler(
-				'Failed to delete the video from cloudinary',
-				StatusCodes.INTERNAL_SERVER_ERROR,
-			),
+	if (lecture.videoUrl?.public_id) {
+		// remove the file from cloudinary
+		const response = await deleteMediaFromCloudinary(
+			lecture.videoUrl.public_id,
+			'video',
 		);
+		if (!response) {
+			return next(
+				new ErrorHandler(
+					'Failed to delete the video from cloudinary',
+					StatusCodes.INTERNAL_SERVER_ERROR,
+				),
+			);
+		}
 	}
 
 	// remove the lecture from course
@@ -257,7 +310,7 @@ const removeLecture = AsyncHandler(async (req, res, next) => {
 	});
 });
 
-// @DESC: remove the lecture
+// @DESC: Get lecture by lectureId ✅
 // @METHOD: [GET]   /api/v1/courses/lecture/:lectureId
 // @ACCESS: private/instructor
 const getLectureById = AsyncHandler(async (req, res, next) => {
@@ -275,7 +328,7 @@ const getLectureById = AsyncHandler(async (req, res, next) => {
 	});
 });
 
-// @DESC: publish the unpublished lecture
+// @DESC: publish the unpublished lecture ✅
 // @METHOD: [PUT]   /api/v1/courses/:courseId?publish=true
 // @ACCESS: private/instructor
 const togglePublishCourse = AsyncHandler(async (req, res, next) => {
@@ -290,7 +343,7 @@ const togglePublishCourse = AsyncHandler(async (req, res, next) => {
 	course.isPublished = publish === 'true';
 	await course.save();
 
-	const statusMessage = course.isPublished ? 'published' : 'not published';
+	const statusMessage = course.isPublished ? 'published' : 'Unpublished';
 	return res.status(StatusCodes.OK).json({
 		success: true,
 		message: `Course ${statusMessage} successfully`,
@@ -299,6 +352,7 @@ const togglePublishCourse = AsyncHandler(async (req, res, next) => {
 
 export {
 	createCourse,
+	searchCourse,
 	instructorGetAllCourses,
 	editCourse,
 	getCourseById,

@@ -26,7 +26,7 @@ router
 	.route('/')
 	// get a particular user✅
 	.get(verifyUser, getUser)
-	// update the user
+	// update the user ✅
 	.put(verifyUser, upload.single('avatar'), updateUser);
 
 export default router;

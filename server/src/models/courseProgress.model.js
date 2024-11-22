@@ -1,19 +1,19 @@
 import mongoose from 'mongoose';
 
-const lectureProgressSchema = new mongoose.Schema(
+const lectureProgressSchema = new mongoose.Schema({
+	lectureId: { type: String },
+	viewed: { type: Boolean, default: false },
+});
+
+const courseProgressSchema = new mongoose.Schema(
 	{
-		lectureId: { type: String },
-		viewed: { type: Boolean, default: false },
+		userId: { type: String },
+		courseId: { type: String },
+		completed: { type: Boolean },
+		lectureProgress: [lectureProgressSchema],
 	},
 	{ timestamps: true },
 );
-
-const courseProgressSchema = new mongoose.Schema({
-	userId: { type: String },
-	courseId: { type: String },
-	completed: { type: Boolean },
-	lectureProgress: [lectureProgressSchema],
-});
 
 export const CourseProgress = mongoose.model(
 	'CourseProgress',
