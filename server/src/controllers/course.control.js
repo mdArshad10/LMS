@@ -67,7 +67,7 @@ const searchCourse = AsyncHandler(async (req, res, next) => {
 				subTitle: { $regex: query, $options: 'i' },
 			},
 			{
-				category: { $regex: categories, $options: 'i' },
+				category: { $regex: query, $options: 'i' },
 			},
 		],
 	};

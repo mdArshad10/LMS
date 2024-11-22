@@ -26,6 +26,7 @@ router
 	// get all courses ✅
 	.get(verifyUser, instructorGetAllCourses);
 
+	// search the course ✅
 router.route('/search').get(verifyUser, searchCourse);
 
 // get the published course ✅
