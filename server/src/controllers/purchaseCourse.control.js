@@ -6,11 +6,13 @@ import { AsyncHandler } from '../middlewares/asyncHandler.js';
 import Stripe from 'stripe';
 import { STRIPE_SECRET_KEY } from '../constants.js';
 import { ORIGIN_URL, WEBHOOK_ENDPOINT_SECRET } from '../constants.js';
+import { Users } from '../models/user.model.js';
+import { Lectures } from '../models/lecture.model.js';
 
 const stripe = new Stripe(STRIPE_SECRET_KEY);
 
-// @DESC: create a stripe checkout session
-// @METHOD: [POST]   /api/v1/
+// @DESC: create a stripe checkout session ✅
+// @METHOD: [POST]   /api/v1//course-purchase/checkout/create-checkout-session
 // @ACCESS: private
 const createCheckoutSession = AsyncHandler(async (req, res, next) => {
 	const userId = req.user.id;
@@ -34,10 +36,9 @@ const createCheckoutSession = AsyncHandler(async (req, res, next) => {
 			{
 				price_data: {
 					currency: 'inr',
-					product: course.id,
 					product_data: {
 						name: course.courseTitle,
-						images: [course.courseThumbnail],
+						images: [course.courseThumbnail?.url],
 					},
 					unit_amount: course.coursePrice * 100,
 				},
@@ -64,6 +65,9 @@ const createCheckoutSession = AsyncHandler(async (req, res, next) => {
 	});
 });
 
+// @DESC: make a stripe for webhook ✅
+// @METHOD: [POST]   /api/v1/course-purchase/webhook
+// @ACCESS: private
 const stripeWebhook = AsyncHandler(async (req, res, next) => {
 	let event;
 
@@ -75,7 +79,6 @@ const stripeWebhook = AsyncHandler(async (req, res, next) => {
 			payload: payloadString,
 			secret,
 		});
-
 		event = stripe.webhooks.constructEvent(payloadString, header, secret);
 	} catch (error) {
 		console.error('Webhook error:', error.message);
@@ -84,17 +87,22 @@ const stripeWebhook = AsyncHandler(async (req, res, next) => {
 
 	// Handle the checkout session completed event
 	if (event.type === 'checkout.session.completed') {
-		console.log('check session complete is called');
-
 		try {
+			console.log('check session complete is called');
+
 			const session = event.data.object;
 
-			const purchase = await CoursePurchase.findOne({
+			const purchase = await CoursePurchases.findOne({
 				paymentId: session.id,
 			}).populate({ path: 'courseId' });
 
 			if (!purchase) {
-				return res.status(404).json({ message: 'Purchase not found' });
+				return next(
+					new ErrorHandler(
+						'Purchase not found',
+						StatusCodes.NOT_FOUND,
+					),
+				);
 			}
 
 			if (session.amount_total) {
@@ -104,7 +112,7 @@ const stripeWebhook = AsyncHandler(async (req, res, next) => {
 
 			// Make all lectures visible by setting `isPreviewFree` to true
 			if (purchase.courseId && purchase.courseId.lectures.length > 0) {
-				await Lecture.updateMany(
+				await Lectures.updateMany(
 					{ _id: { $in: purchase.courseId.lectures } },
 					{ $set: { isPreviewFree: true } },
 				);
@@ -113,14 +121,14 @@ const stripeWebhook = AsyncHandler(async (req, res, next) => {
 			await purchase.save();
 
 			// Update user's enrolledCourses
-			await User.findByIdAndUpdate(
+			await Users.findByIdAndUpdate(
 				purchase.userId,
 				{ $addToSet: { enrolledCourses: purchase.courseId._id } }, // Add course ID to enrolledCourses
 				{ new: true },
 			);
 
 			// Update course to add user ID to enrolledStudents
-			await Course.findByIdAndUpdate(
+			await Courses.findByIdAndUpdate(
 				purchase.courseId._id,
 				{ $addToSet: { enrolledStudents: purchase.userId } }, // Add user ID to enrolledStudents
 				{ new: true },
@@ -130,9 +138,12 @@ const stripeWebhook = AsyncHandler(async (req, res, next) => {
 			return res.status(500).json({ message: 'Internal Server Error' });
 		}
 	}
-	res.status(200).send();
+	res.status(StatusCodes.OK).json({});
 });
 
+// @DESC: get a purchase course details ✅
+// @METHOD: [GET]   /api/v1/course-purchase/course/:courseId/detail-with-status
+// @ACCESS: private
 const getCourseDetailWithPurchasedStatus = AsyncHandler(
 	async (req, res, next) => {
 		const { courseId } = req.params;
@@ -156,8 +167,11 @@ const getCourseDetailWithPurchasedStatus = AsyncHandler(
 	},
 );
 
+// @DESC: get a all purchases details
+// @METHOD: [GET]   /api/v1/course-purchase/
+// @ACCESS: private
 const getAllPurchasedCourse = AsyncHandler(async (req, res, next) => {
-	const purchasedCourse = await Courses.find({
+	const purchasedCourse = await CoursePurchases.find({
 		status: 'completed',
 	}).populate('courseId');
 	if (!purchasedCourse) {

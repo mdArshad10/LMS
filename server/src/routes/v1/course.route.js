@@ -47,18 +47,18 @@ router
 router
 	.route('/:courseId/lectures')
 	// get a lecture  ✅
-	.get(getCourseLecture)
+	.get(verifyUser, getCourseLecture)
 	// add the lecture into the course ✅
-	.post(createLecture);
+	.post(verifyUser, createLecture);
 
 // update the lecture ✅
-router.route('/:courseId/lectures/:lectureId').put(editLecture);
+router.route('/:courseId/lectures/:lectureId').put(verifyUser, editLecture);
 
 router
 	.route('/lectures/:lectureId')
 	// get lecture by Id ✅
-	.get(getLectureById)
+	.get(verifyUser, getLectureById)
 	// delete the lecture ✅
-	.delete(removeLecture);
+	.delete(verifyUser, removeLecture);
 
 export default router;

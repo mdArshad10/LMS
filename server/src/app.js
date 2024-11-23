@@ -9,6 +9,7 @@ import { errorHandler } from './middlewares/errorHandler.js';
 import { StatusCodes } from 'http-status-codes';
 import mongoSanitize from 'express-mongo-sanitize';
 import { rateLimit } from 'express-rate-limit';
+import { POSTMAN_URL } from './constants.js';
 
 const app = express();
 
@@ -33,11 +34,20 @@ app.use(
 		methods: ['GET', 'POST', 'PUT', 'DELETE'],
 	}),
 );
-app.use(mongoSanitize())
+app.use(mongoSanitize());
 app.use(limiter);
 
-
 // middlewares
+app.get('/', (req, res, next) => {
+	if (POSTMAN_URL) {
+		return res.redirect(`${POSTMAN_URL}`);
+	}
+	return res.status(StatusCodes.OK).json({
+		success: true,
+		message: 'Welcome to the Learning Management System API',
+	});
+});
+
 app.use('/api', routes);
 app.use(errorHandler);
 app.use('*', (req, res, next) => {
