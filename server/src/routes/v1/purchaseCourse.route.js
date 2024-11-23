@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import express from 'express';
 import {
 	createCheckoutSession,
 	getAllPurchasedCourse,
@@ -7,7 +7,7 @@ import {
 } from '../../controllers/purchaseCourse.control.js';
 import { verifyUser } from '../../middlewares/verify.js';
 
-const router = Router();
+const router = express.Router();
 
 router
 	.route('/checkout/create-checkout-session')
