@@ -5,10 +5,7 @@ import { Loader2 } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import {
-  useCreateLectureMutation,
-  useGetCourseLectureQuery,
-} from "@/features/api/courseApiSlice";
+import { useCreateLectureMutation, useGetCourseAllLecturesQuery } from "@/features/api/courseApiSlice";
 import { toast } from "sonner";
 import Lecture from "@/components/admin/Lecture";
 
@@ -25,7 +22,7 @@ const CreateLecturePage = () => {
     isLoading: getLectureLoading,
     isError: getLectureError,
     refetch,
-  } = useGetCourseLectureQuery(courseId);
+  } = useGetCourseAllLecturesQuery(courseId);
 
   const createLectureHandler = async (data) => {
     console.log(data);

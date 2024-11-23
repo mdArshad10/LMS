@@ -4,43 +4,80 @@ const courseApiSlice = basicApi.injectEndpoints({
   endpoints: (build) => ({
     createCourse: build.mutation({
       query: (data) => ({
-        url: "/course/create",
+        url: "/courses",
         method: "POST",
         data,
       }),
     }),
     getCreatorCourse: build.query({
       query: () => ({
-        url: "/course",
+        url: "/courses",
         method: "GET",
       }),
     }),
-    editCourse: build.mutation({
+    togglePublishCourse: build.mutation({
       query: (data) => ({
-        url: `/course/${data.courseId}`,
+        url: `/courses/${data.courseId}?publish=${data.isPublished}`,
         method: "PUT",
         body: data,
       }),
     }),
     getCourseById: build.query({
       query: (courseId) => ({
-        url: `/course/${courseId}`,
+        url: `/courses/${courseId}`,
         method: "GET",
       }),
     }),
+    getAllPublishedCourses: build.query({
+      query: () => ({
+        url: "/courses/published",
+        method: "GET",
+      }),
+    }),
+    editCourse: build.query({
+      query: (data) => ({
+        url: `/courses/${data.courseId}`,
+        method: "PUT",
+        body: data,
+      }),
+    }),
 
+    // ===== lecture Routes ======
     createLecture: build.mutation({
       query: (data) => ({
-        url: `/course/${data.courseId}/lecture`,
+        url: `/courses/${data.courseId}/lectures`,
         method: "POST",
         body: data,
       }),
     }),
 
-    getCourseLecture: build.query({
+    getCourseAllLectures: build.query({
       query: (courseId) => ({
-        url: `/course/${courseId}/lecture`,
+        url: `/courses/${courseId}/lectures`,
         method: "GET",
+      }),
+    }),
+
+    getParticularLecture: build.query({
+      query: (courseId, lectureId) => ({
+        url: `/courses/${courseId}/lectures/${lectureId}`,
+        method: "GET",
+      }),
+    }),
+
+    editLecture: build.mutation({
+      query: (data) => ({
+        url: `/courses/${data.courseId}/lectures/${data.lectureId}`,
+        method: "PUT",
+        body: data,
+      }),
+    }),
+
+    deleteLecture: build.mutation({
+      query: (data) => ({
+        url: `/courses/lectures/${data.lectureId}`,
+        method: "DELETE",
+        body: data,
       }),
     }),
   }),
@@ -49,8 +86,16 @@ const courseApiSlice = basicApi.injectEndpoints({
 export const {
   useCreateCourseMutation,
   useGetCreatorCourseQuery,
-  useEditCourseMutation,
+  useTogglePublishCourseMutation,
   useGetCourseByIdQuery,
+  useGetAllPublishedCoursesQuery,
+  useEditCourseMutation,
   useCreateLectureMutation,
-  useGetCourseLectureQuery,
+  useDeleteLectureMutation,
+  useEditCourseQuery,
+  useEditLectureMutation,
+  useGetCourseAllLecturesQuery,
+  useGetParticularLectureQuery,
 } = courseApiSlice;
+
+// seGetCourseLectureQuery;

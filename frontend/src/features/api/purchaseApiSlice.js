@@ -9,7 +9,23 @@ const purchaseApiSlice = basicApi.injectEndpoints({
         body: data,
       }),
     }),
+    getAllPurchasesCourse: builder.query({
+      query: () => ({
+        url: "/course-purchase",
+        method: "GET",
+      }),
+    }),
+    getPurchasesCourseDetail: builder.query({
+      query: () => ({
+        url: "/course-purchase/course/:courseId/detail-with-status",
+        method: "GET",
+      }),
+    }),
   }),
 });
 
-export const { useCreateCheckoutSessionsMutation } = purchaseApiSlice;
+export const {
+  useCreateCheckoutSessionsMutation,
+  useGetAllPurchasesCourseQuery,
+  useGetPurchasesCourseDetailQuery,
+} = purchaseApiSlice;

@@ -1,11 +1,16 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import React, { useState } from "react";
+import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 
 const HeroSection = () => {
-  const [searchQuery, setSearchQuery] = useState("");
-  const searchHandler = async (e) => {
-    e.preventDefault();
+  const { register, handleSubmit, reset } = useForm();
+  const navigate = useNavigate();
+  const searchHandler = async (data) => {
+    console.log(data);
+    navigate(`/search?q=${data.search}`);
+    reset();
   };
   return (
     <div className="relative bg-gradient-to-r from-blue-500 to bg-indigo-600 dark:from-gray-800 dark:to-gray-900 py-24 px-4 text-center">
@@ -17,14 +22,12 @@ const HeroSection = () => {
           Discover, Learn, and Upskill with our wide range of courses
         </p>
         <form
-          onSubmit={searchHandler}
+          onSubmit={handleSubmit(searchHandler)}
           className="flex items-center bg-white dark:bg-gray-800 rounded-full shadow-lg overflow-hidden max-w-xl mx-auto mb-6"
         >
           <Input
             type="text"
-            value={searchQuery}
-            name="search"
-            onChange={(e) => setSearchQuery(e.target.value)}
+            {...register("search")}
             placeholder="Search"
             className="flex-grow border-none focus-visible:ring-0 px-6 py-3 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500"
           />
