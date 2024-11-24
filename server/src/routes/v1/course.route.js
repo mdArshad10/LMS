@@ -16,6 +16,7 @@ import {
 	searchCourse,
 } from '../../controllers/course.control.js';
 import { upload } from '../../utils/multer.js';
+import { validate } from '../../middlewares/validate.js';
 
 const router = Router();
 

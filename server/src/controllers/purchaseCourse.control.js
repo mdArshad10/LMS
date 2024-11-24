@@ -12,7 +12,7 @@ import { Lectures } from '../models/lecture.model.js';
 const stripe = new Stripe(STRIPE_SECRET_KEY);
 
 // @DESC: create a stripe checkout session ✅
-// @METHOD: [POST]   /api/v1//course-purchase/checkout/create-checkout-session
+// @METHOD: [POST]   /api/v1/course-purchase/checkout/create-checkout-session
 // @ACCESS: private
 const createCheckoutSession = AsyncHandler(async (req, res, next) => {
 	const userId = req.user.id;

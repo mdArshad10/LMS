@@ -40,14 +40,14 @@ const getCourseProgress = AsyncHandler(async (req, res, next) => {
 	return res.status(StatusCodes.OK).json({
 		data: {
 			courseDetails,
-			progress: courseProgress.progress,
+			progress: courseProgress.lectureProgress,
 			completed: courseProgress.completed,
 		},
 	});
 });
 
-// @DESC: update the lecture progress
-// @METHOD: [PUT]   /api/v1/users/signup
+// @DESC: update the lecture  of a particular course
+// @METHOD: [PUT]   /course-progress/:courseId/lecture/:lectureId/view
 // @ACCESS: private
 const updateLectureProgress = AsyncHandler(async (req, res, next) => {
 	const { courseId, lectureId } = req.params;
@@ -62,38 +62,40 @@ const updateLectureProgress = AsyncHandler(async (req, res, next) => {
 			completed: false,
 			lectureProgress: [],
 		});
+	}
 
-		// find the lecture progress in the course progress
-		let lectureIndex = CourseProgress.lectureProgress.findIndex(
-			(lecture) => lecture.lectureId === lectureId,
-		);
+	console.log(courseProgress);
 
-		if (lectureIndex !== -1) {
-			// if the lecture already exists, update it status
-			courseProgress.lectureProgress[lectureIndex].viewed = true;
-		} else {
-			// add new lecture progress
-			courseProgress.lectureProgress.push({
-				lectureId,
-				viewed: true,
-			});
-		}
+	// find the lecture progress in the course progress
+	const lectureIndex = courseProgress.lectureProgress?.findIndex(
+		(lecture) => lecture.lectureId.toString() === lectureId.toString(),
+	);
 
-		// if all lecture is completed
-		const lectureProgressLength = courseProgress.lectureProgress.filter(
-			(lectureProgress) => lectureProgress.viewed,
-		).length;
-		const course = await Courses.findById(courseId);
-		if (course.lectures.length === lectureProgressLength) {
-			courseProgress.completed = true;
-		}
-
-		await courseProgress.save();
-
-		return res.status(StatusCodes.OK).json({
-			message: 'lecture progress updated successfully',
+	if (lectureIndex !== -1) {
+		// if the lecture already exists, update it status
+		courseProgress.lectureProgress[lectureIndex].viewed = true;
+	} else {
+		// add new lecture progress
+		courseProgress.lectureProgress.push({
+			lectureId,
+			viewed: true,
 		});
 	}
+
+	// if all lecture is completed
+	const lectureProgressLength = courseProgress.lectureProgress.filter(
+		(lectureProgress) => lectureProgress.viewed,
+	).length;
+	const course = await Courses.findById(courseId);
+	if (course.lectures.length === lectureProgressLength) {
+		courseProgress.completed = true;
+	}
+
+	await courseProgress.save();
+
+	return res.status(StatusCodes.OK).json({
+		message: 'lecture progress updated successfully',
+	});
 });
 
 // @DESC: mark the all lectures as completed

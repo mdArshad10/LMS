@@ -4,7 +4,7 @@ import { fileUploadInCloudinary } from '../utils/cloudinary.js';
 import { AsyncHandler } from '../middlewares/asyncHandler.js';
 
 const lectureFileUpload = AsyncHandler(async (req, res, next) => {
-	const file = req.file.path;
+	const file = req.file?.path;
 	if (!file) {
 		return next(new ErrorHandler('File not found', StatusCodes.NOT_FOUND));
 	}

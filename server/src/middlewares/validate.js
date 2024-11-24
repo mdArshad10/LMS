@@ -2,13 +2,13 @@ import { StatusCodes } from 'http-status-codes';
 import { ExpressValidator } from 'express-validator';
 
 export const validate = async (req, res, next) => {
-	const error = ExpressValidator(req);
-	if (error.isEmpty()) {
+	const { errors } = ExpressValidator(req);
+	if (errors.length == 0) {
 		return next();
 	}
 
 	const extractedErrors = [];
-	error.array().map((err) => extractedErrors.push(err.msg));
+	errors.map((err) => extractedErrors.push(err.msg));
 
 	res.status(StatusCodes.BAD_REQUEST).json({
 		success: false,

@@ -5,7 +5,9 @@ import {
 	markAsInCompleted,
 	updateLectureProgress,
 } from '../../controllers/courseProcess.control.js';
-import {verifyUser} from '../../middlewares/verify.js';
+import { verifyUser } from '../../middlewares/verify.js';
+import { validate } from '../../middlewares/validate.js';
+import { courseProcessValidator } from '../../middlewares/validators/courseProgress.validator.js';
 
 const router = Router();
 

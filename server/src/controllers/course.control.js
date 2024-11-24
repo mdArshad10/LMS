@@ -14,6 +14,20 @@ import { Lectures } from '../models/lecture.model.js';
 const createCourse = AsyncHandler(async (req, res, next) => {
 	const { courseTitle, category } = req.body;
 
+	const existingCourse = await Courses.findOne({
+		courseTitle,
+		category,
+		creator: req.user.id,
+	});
+	if (existingCourse) {
+		return next(
+			new ErrorHandler(
+				'You have already created this course',
+				StatusCodes.BAD_REQUEST,
+			),
+		);
+	}
+
 	// TODO: same user not created same course
 	const newCourse = await Courses.create({
 		courseTitle,
@@ -199,9 +213,27 @@ const createLecture = AsyncHandler(async (req, res, next) => {
 	const { lectureTitle } = req.body;
 	const { courseId } = req.params;
 
+	const existingLecture = await Courses.findById(courseId).populate({
+		path: 'lectures',
+		select: 'lectureTitle',
+	});
+
+	const existingTitle = existingLecture.lectures.find(
+		(lecture) => lecture.lectureTitle === lectureTitle,
+	);
+
+	if (existingTitle) {
+		return next(
+			new ErrorHandler(
+				'Lecture title already exists',
+				StatusCodes.CONFLICT,
+			),
+		);
+	}
+
 	const newLecture = await Lectures.create({ lectureTitle });
 
-	const course = await Courses.findByIdAndUpdate(
+	await Courses.findByIdAndUpdate(
 		courseId,
 		{
 			$push: {

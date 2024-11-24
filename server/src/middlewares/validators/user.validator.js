@@ -1,10 +1,10 @@
 import { body } from 'express-validator';
 
 const userValidation = {
-	register: [
-		body('name').isString().escape(),
-		body('email').isString().isEmail().escape(),
-	],
+	register: [],
+	login: [],
+	getUser: [],
+	updateUser: [],
 };
 
 export { userValidation };

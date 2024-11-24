@@ -24,6 +24,7 @@ const categories = [
   { id: "docker", label: "Docker" },
   { id: "mongodb", label: "MongoDB" },
   { id: "html", label: "HTML" },
+  { id: "reactjs", label: "React JS" },
 ];
 const Filter = ({ handleFilterChanges }) => {
   const handleCategoryChange = (categoryId) => {

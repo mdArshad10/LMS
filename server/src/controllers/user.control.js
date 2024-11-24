@@ -80,7 +80,7 @@ const loginUser = AsyncHandler(async (req, res, next) => {
 });
 
 // @DESC: logout the user✅
-// @METHOD: [GET]   /api/v1/users/logout
+// @METHOD: [POST]   /api/v1/users/logout
 // @ACCESS: private
 const logoutUser = AsyncHandler(async (req, res, next) => {
 	res.status(StatusCodes.OK).clearCookie('token').json({

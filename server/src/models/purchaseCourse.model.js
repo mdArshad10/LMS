@@ -29,6 +29,6 @@ const coursePurchaseSchema = new mongoose.Schema(
 );
 
 export const CoursePurchases = mongoose.model(
-	'CoursePurchaseSchema',
+	'CoursePurchase',
 	coursePurchaseSchema,
 );
