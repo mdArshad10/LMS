@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { userValidation } from '../../middlewares/validators/user.validator.js';
+import userValidation from '../../middlewares/validators/user.validator.js';
 import {
 	loginUser,
 	logoutUser,
@@ -9,25 +9,34 @@ import {
 } from '../../controllers/user.control.js';
 import { verifyUser } from '../../middlewares/verify.js';
 import { upload } from '../../utils/multer.js';
-import { validate } from '../../middlewares/validate.js';
+import validate from '../../middlewares/validate.js';
 
 const router = Router();
+// console.log(userValidation.register);
 
 // register the user ✅
-router.route('/signup').post(registerUser);
 
-// login the user ✅
-router.route('/login').post(loginUser);
+// router.post('/signup', userValidation.register, validate, registerUser);
+router.route('/signup').post(userValidation.register, validate, registerUser);
 
-// logout the user ✅
+// // login the user ✅
+router.route('/login').post(userValidation.login, validate, loginUser);
+
+// // logout the user ✅
 router.route('/logout').post(verifyUser, logoutUser);
 
-// update the user
+// // update the user
 router
 	.route('/')
 	// get a particular user✅
 	.get(verifyUser, getUser)
 	// update the user ✅
-	.put(verifyUser, upload.single('avatar'), updateUser);
+	.put(
+		verifyUser,
+		upload.single('avatar'),
+		userValidation.updateUser,
+		validate,
+		updateUser,
+	);
 
 export default router;

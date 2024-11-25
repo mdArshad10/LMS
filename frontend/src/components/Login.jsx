@@ -14,8 +14,10 @@ import { useLoginMutation } from "@/features/api/authApiSlice";
 import { Loader2 } from "lucide-react";
 import { useEffect } from "react";
 import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
+  const navigate = useNavigate();
   const {
     handleSubmit,
     register,
@@ -29,14 +31,14 @@ const Login = () => {
   ] = useLoginMutation();
 
   const handleLoginSubmit = async (data) => {
-    console.log(data);
-
+    await login(data).unwrap();
     reset();
   };
 
   useEffect(() => {
     if (isSuccess && loginUserData) {
       toast.success(loginUserData.message);
+      navigate("/");
     }
 
     if (loginUserError) {

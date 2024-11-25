@@ -4,18 +4,44 @@ import {
 	markAsCompleted,
 	markAsInCompleted,
 	updateLectureProgress,
-} from '../../controllers/courseProcess.control.js';
+} from '../../controllers/courseProgress.control.js';
 import { verifyUser } from '../../middlewares/verify.js';
-import { validate } from '../../middlewares/validate.js';
-import { courseProcessValidator } from '../../middlewares/validators/courseProgress.validator.js';
+import validate  from '../../middlewares/validate.js';
+import { courseProgressValidator } from '../../middlewares/validators/courseProgress.validator.js';
 
 const router = Router();
 
-router.route('/:courseId').get(verifyUser, getCourseProgress);
+router
+	.route('/:courseId')
+	.get(
+		verifyUser,
+		courseProgressValidator.getCourseProgress,
+		validate,
+		getCourseProgress,
+	);
 router
 	.route('/:courseId/lecture/:lectureId/view')
-	.post(verifyUser, updateLectureProgress);
-router.route('/:courseId/complete').post(verifyUser, markAsCompleted);
-router.route('/:courseId/incomplete').post(verifyUser, markAsInCompleted);
+	.post(
+		verifyUser,
+		courseProgressValidator.updateLectureProgress,
+		validate,
+		updateLectureProgress,
+	);
+router
+	.route('/:courseId/complete')
+	.post(
+		verifyUser,
+		courseProgressValidator.markAsCompleted,
+		validate,
+		markAsCompleted,
+	);
+router
+	.route('/:courseId/incomplete')
+	.post(
+		verifyUser,
+		courseProgressValidator.markAsInCompleted,
+		validate,
+		markAsInCompleted,
+	);
 
 export default router;

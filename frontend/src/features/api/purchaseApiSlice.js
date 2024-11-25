@@ -4,7 +4,7 @@ const purchaseApiSlice = basicApi.injectEndpoints({
   endpoints: (builder) => ({
     createCheckoutSessions: builder.mutation({
       query: (data) => ({
-        url: "/checkout/sessions",
+        url: "/course-purchase/checkout/create-checkout-session",
         method: "POST",
         body: data,
       }),
@@ -15,9 +15,9 @@ const purchaseApiSlice = basicApi.injectEndpoints({
         method: "GET",
       }),
     }),
-    getPurchasesCourseDetail: builder.query({
-      query: () => ({
-        url: "/course-purchase/course/:courseId/detail-with-status",
+    getCourseDetailWithStatus: builder.query({
+      query: (courseId) => ({
+        url: `/course-purchase/course/${courseId}/detail-with-status`,
         method: "GET",
       }),
     }),
@@ -27,5 +27,5 @@ const purchaseApiSlice = basicApi.injectEndpoints({
 export const {
   useCreateCheckoutSessionsMutation,
   useGetAllPurchasesCourseQuery,
-  useGetPurchasesCourseDetailQuery,
+  useGetCourseDetailWithStatusQuery,
 } = purchaseApiSlice;

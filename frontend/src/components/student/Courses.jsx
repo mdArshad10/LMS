@@ -2,10 +2,11 @@ import React from "react";
 import { Skeleton } from "../ui/skeleton";
 import Course from "./Course";
 import { CourseSkeleton } from "./CourseSkeleton";
+import { useGetAllPublishedCoursesQuery } from "@/features/api/courseApiSlice";
 
 const Courses = () => {
-  const isLoading = false;
-  const courses = [1, 2, 3, 4, 5];
+  const { data, isLoading } = useGetAllPublishedCoursesQuery();
+
   return (
     <div className="bg-gray-50 dark:bg-[#141414]">
       <div className="max-w-7xl mx-auto p-6">
@@ -15,7 +16,9 @@ const Courses = () => {
             ? Array.from({ length: 8 }).map((_, index) => (
                 <CourseSkeleton key={index} />
               ))
-            : courses.map((course, index) => <Course key={index} />)}
+            : data.course.map((course, index) => (
+                <Course course={course} key={index} />
+              ))}
         </div>
       </div>
     </div>

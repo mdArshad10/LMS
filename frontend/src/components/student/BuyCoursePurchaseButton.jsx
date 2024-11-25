@@ -13,16 +13,16 @@ const BuyCoursePurchaseButton = ({ courseId }) => {
   ] = useCreateCheckoutSessionsMutation();
 
   const purchaseCourseHandler = async () => {
-    console.log("Purchase Course");
+    await createCheckoutSessions(courseId).unwrap();
   };
 
   useEffect(() => {
     if (isSuccess) {
-        if(data?.url){
-            window.location.href = data.url;
-        }else{
-            toast.error("Failed to create checkout session. Please try again.");
-        }
+      if (data?.url) {
+        window.location.href = data.url;
+      } else {
+        toast.error("Failed to create checkout session. Please try again.");
+      }
     }
     if (isError) {
       toast.error(error.message);

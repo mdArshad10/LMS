@@ -1,7 +1,18 @@
-import { body, param, query } from 'express-validator';
+import { body, param } from 'express-validator';
 
 export const purchaseCourseValidator = {
-	checkoutSession: [],
-	getPurchasedCourseDetail: [],
-	getAllPurchasedCourse: [],
+	checkoutSession: [
+		body('courseId')
+			.notEmpty()
+			.withMessage('Course ID is required')
+			.isMongoId()
+			.withMessage('courserId is invalid'),
+	],
+	getPurchasedCourseDetail: [
+		param('courseId')
+			.notEmpty()
+			.withMessage('Course ID is required')
+			.isMongoId()
+			.withMessage('courserId is invalid'),
+	],
 };

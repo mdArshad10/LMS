@@ -147,7 +147,9 @@ const stripeWebhook = AsyncHandler(async (req, res, next) => {
 const getCourseDetailWithPurchasedStatus = AsyncHandler(
 	async (req, res, next) => {
 		const { courseId } = req.params;
-		const userId = req.user.id;
+		console.log(req.user);
+
+		const userId = req.user._id;
 		const course = await Courses.findById(courseId)
 			.populate({ path: 'creator' })
 			.populate({ path: 'lectures' });

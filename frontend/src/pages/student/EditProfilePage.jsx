@@ -22,6 +22,7 @@ import { toast } from "sonner";
 
 const EditProfilePage = () => {
   const [name, setName] = useState("");
+  // TODO: add the profile photo using the use-hook-form
   const [profilePhoto, setProfilePhoto] = useState("");
 
   const userDetails = [

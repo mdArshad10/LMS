@@ -23,18 +23,21 @@ import { Separator } from "./ui/separator";
 import { Link, useNavigate } from "react-router-dom";
 import { useLogoutMutation } from "@/features/api/authApiSlice";
 import { toast } from "sonner";
+import { useSelector } from "react-redux";
 
 const Navbar = () => {
+  const { user } = useSelector((store) => store.auth);
   const [logout, { isSuccess, data }] = useLogoutMutation();
   const navigate = useNavigate();
-  const user = {
-    role: "instructor",
+
+  const logoutHandler = async () => {
+    await logout();
   };
 
   useEffect(() => {
     if (isSuccess) {
       toast.success(data.message || "User logged Out");
-      navigate("/login");
+      navigate("/login", { state: "login" });
     }
   }, [isSuccess]);
 
@@ -56,7 +59,7 @@ const Navbar = () => {
               <DropdownMenuTrigger asChild>
                 <Avatar>
                   <AvatarImage
-                    src="https://github.com/shadcn.png"
+                    src={user?.photoUrl?.url || "https://github.com/shadcn.png"}
                     alt="@shadcn"
                   />
                   <AvatarFallback>CN</AvatarFallback>
@@ -72,8 +75,8 @@ const Navbar = () => {
                   <DropdownMenuItem>
                     <Link to={"edit-profile"}>Edit Profile</Link>
                   </DropdownMenuItem>
-                  <DropdownMenuItem>
-                    <span>Log Out</span>
+                  <DropdownMenuItem onClick={logoutHandler}>
+                    Log Out
                   </DropdownMenuItem>
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />
@@ -85,8 +88,15 @@ const Navbar = () => {
             </DropdownMenu>
           ) : (
             <div className="flex items-center gap-2">
-              <Button variant="outline">Login</Button>
-              <Button>Signup</Button>
+              <Button
+                variant="outline"
+                onClick={() => navigate("login", { state: "login" })}
+              >
+                Login
+              </Button>
+              <Button onClick={() => navigate("login", { state: "signup" })}>
+                Signup
+              </Button>
             </div>
           )}
           <DarkMode />

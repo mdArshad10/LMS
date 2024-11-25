@@ -6,15 +6,20 @@ import {
 	stripeWebhook,
 } from '../../controllers/purchaseCourse.control.js';
 import { verifyUser } from '../../middlewares/verify.js';
-import { validate } from '../../middlewares/validate.js';
-import {purchaseCourseValidator} from '../../middlewares/validators/purchaseCourseValidator.js'
+import validate  from '../../middlewares/validate.js';
+import { purchaseCourseValidator } from '../../middlewares/validators/purchaseCourseValidator.js';
 
 const router = express.Router();
 
 // create the checkout inbuild session ✅
 router
 	.route('/checkout/create-checkout-session')
-	.post(verifyUser, createCheckoutSession);
+	.post(
+		verifyUser,
+		purchaseCourseValidator.checkoutSession,
+		validate,
+		createCheckoutSession,
+	);
 
 // create a webhook ✅
 router
@@ -24,7 +29,12 @@ router
 // get a course details with purchase ✅
 router
 	.route('/course/:courseId/detail-with-status')
-	.get(verifyUser, getCourseDetailWithPurchasedStatus);
+	.get(
+		verifyUser,
+		purchaseCourseValidator.getPurchasedCourseDetail,
+		validate,
+		getCourseDetailWithPurchasedStatus,
+	);
 // get all purchased course ✅
 router.route('/').get(verifyUser, getAllPurchasedCourse);
 

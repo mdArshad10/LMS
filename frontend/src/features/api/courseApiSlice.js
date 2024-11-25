@@ -33,6 +33,7 @@ const courseApiSlice = basicApi.injectEndpoints({
         url: "/courses/published",
         method: "GET",
       }),
+      transformErrorResponse: (response) => response.data.course,
     }),
     editCourse: build.query({
       query: (data) => ({

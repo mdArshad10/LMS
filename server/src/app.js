@@ -35,7 +35,7 @@ app.use(
 	}),
 );
 app.use(mongoSanitize());
-app.use(limiter);
+// app.use(limiter);
 
 // middlewares
 app.get('/', (req, res, next) => {

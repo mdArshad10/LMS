@@ -12,11 +12,15 @@ import {
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { Loader2 } from "lucide-react";
-import { useRegisterMutation } from "@/features/api/authApiSlice";
+import {
+  useRegisterMutation,
+} from "@/features/api/authApiSlice";
 import { useEffect } from "react";
 import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 
 const Signup = () => {
+  const navigate = useNavigate();
   const [
     userRegister,
     { error: registerError, isLoading, isSuccess, data: registerData },
@@ -30,13 +34,14 @@ const Signup = () => {
 
   const signupHandler = async (data) => {
     console.log(data);
-
+    await userRegister(data).unwrap();
     reset();
   };
 
   useEffect(() => {
     if (isSuccess && registerData) {
       toast.success(userRegister.message);
+      navigate('/');
     }
 
     if (registerError) {

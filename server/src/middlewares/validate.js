@@ -1,14 +1,14 @@
 import { StatusCodes } from 'http-status-codes';
-import { ExpressValidator } from 'express-validator';
+import { validationResult } from 'express-validator';
 
-export const validate = async (req, res, next) => {
-	const { errors } = ExpressValidator(req);
-	if (errors.length == 0) {
+const validate = (req, res, next) => {
+	const errors = validationResult(req);
+	if (errors.isEmpty()) {
 		return next();
 	}
 
 	const extractedErrors = [];
-	errors.map((err) => extractedErrors.push(err.msg));
+	errors.array().map((err) => extractedErrors.push(err.msg));
 
 	res.status(StatusCodes.BAD_REQUEST).json({
 		success: false,
@@ -16,3 +16,5 @@ export const validate = async (req, res, next) => {
 		err: extractedErrors,
 	});
 };
+
+export default validate;

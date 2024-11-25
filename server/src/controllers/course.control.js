@@ -28,7 +28,6 @@ const createCourse = AsyncHandler(async (req, res, next) => {
 		);
 	}
 
-	// TODO: same user not created same course
 	const newCourse = await Courses.create({
 		courseTitle,
 		category,
@@ -111,8 +110,7 @@ const searchCourse = AsyncHandler(async (req, res, next) => {
 
 // @DESC: get all courses of creator ✅
 // @METHOD: [GET]   /api/v1/courses/
-// @ACCESS: private/instructor
-// TODO: adding the pagination and search parameters
+// @ACCESS: private
 const instructorGetAllCourses = AsyncHandler(async (req, res, next) => {
 	const courses = await Courses.find({ creator: req.user.id }).sort({
 		createdAt: -1,
@@ -186,7 +184,7 @@ const editCourse = AsyncHandler(async (req, res, next) => {
 	});
 });
 
-// @DESC: creator edit the course ✅
+// @DESC: get particular course by courseId ✅
 // @METHOD: [GET]   /api/v1/courses/:courseId
 // @ACCESS: private/instructor
 const getCourseById = AsyncHandler(async (req, res, next) => {
