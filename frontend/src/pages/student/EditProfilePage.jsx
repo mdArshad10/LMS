@@ -25,15 +25,12 @@ const EditProfilePage = () => {
   // TODO: add the profile photo using the use-hook-form
   const [profilePhoto, setProfilePhoto] = useState("");
 
-  const userDetails = [
-    {
-      title: "Name",
-      value: "Md. Arshad",
-    },
-    { title: "Email", value: "me@example.com" },
-    { title: "Role", value: "student" },
-  ];
-  const { data, isLoading: getProfileLoading, refetch } = useGetProfileQuery();
+  const {
+    data: userData,
+    isLoading: getProfileLoading,
+    isError: getProfileErrorLoading,
+    refetch,
+  } = useGetProfileQuery();
 
   const [
     updateProfile,
@@ -46,8 +43,6 @@ const EditProfilePage = () => {
     },
   ] = useUpdateProfileMutation();
 
-  const ourEnrolledCourses = [1, 2, 3];
-
   const onChangeFileHandler = (e) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -59,6 +54,11 @@ const EditProfilePage = () => {
     const formData = new FormData();
     formData.append("name", name);
     formData.append("profilePhoto", profilePhoto);
+    try {
+      await updateProfile(formData).unwrap();
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   useEffect(() => {
@@ -75,8 +75,13 @@ const EditProfilePage = () => {
     }
   }, [isSuccess, userUpdateData, updateProfileError, isError]);
 
-  //   const isLoading = false;
-  return (
+  console.log(getProfileLoading);
+
+  return getProfileLoading ? (
+    <p>...loading</p>
+  ) : getProfileErrorLoading ? (
+    <div>Not Error</div>
+  ) : (
     <div className="max-w-4xl mx-auto mt-16 mb-10 px-4 md:px-0 pb-4">
       <h1 className="font-bold text-2xl text-center md:text-left">Profile</h1>
       <div className="flex flex-col md:flex-row items-center md:items-start gap-8 my-5">
@@ -87,9 +92,30 @@ const EditProfilePage = () => {
           </Avatar>
         </div>
         <div>
-          {userDetails.map(({ title, value }, index) => (
-            <UserDetail key={index} title={title} value={value} />
-          ))}
+          <div className="mb-2">
+            <h1 className="font-semibold text-gray-900 dark:text-gray-100 ">
+              Name :
+              <span className="font-normal text-gray-700 dark:text-gray-300 ml-2">
+                {userData.data.name}
+              </span>
+            </h1>
+          </div>
+          <div className="mb-2">
+            <h1 className="font-semibold text-gray-900 dark:text-gray-100 ">
+              Email :
+              <span className="font-normal text-gray-700 dark:text-gray-300 ml-2">
+                {userData.data.email}
+              </span>
+            </h1>
+          </div>
+          <div className="mb-2">
+            <h1 className="font-semibold text-gray-900 dark:text-gray-100 ">
+              Role :
+              <span className="font-normal text-gray-700 dark:text-gray-300 ml-2">
+                {userData.data.role.toUpperCase()}
+              </span>
+            </h1>
+          </div>
           <Dialog>
             <DialogTrigger asChild>
               <Button sm="sm" className="mt-2">
@@ -109,11 +135,11 @@ const EditProfilePage = () => {
                   <Label htmlFor="name" className="text-right">
                     Name
                   </Label>
-                  <Input
+                  <input
                     type="text"
                     id="name"
                     className="col-span-3"
-                    onChange={(e) => e.target.value}
+                    onChange={(e) => setName(e.target.value)}
                     value={name}
                     placeholder="Enter your name"
                   />
@@ -122,10 +148,10 @@ const EditProfilePage = () => {
                   <Label htmlFor="profilePhoto" className="text-right">
                     Profile Photo
                   </Label>
-                  <Input
+                  <input
                     type="file"
                     accept="image/*"
-                    onChange={onChangeProfileDetails}
+                    onChange={onChangeFileHandler}
                     id="profilePhoto"
                     className="col-span-3"
                   />
@@ -134,7 +160,7 @@ const EditProfilePage = () => {
               <DialogFooter>
                 <Button
                   disabled={isLoading}
-                  onClick={onChangeFileHandler}
+                  onClick={onChangeProfileDetails}
                   type="submit"
                 >
                   {isLoading ? (
@@ -154,26 +180,15 @@ const EditProfilePage = () => {
       <div>
         <h1 className="font-medium text-lg">Course you're enrolled</h1>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 my-5">
-          {ourEnrolledCourses.length == 0 ? (
+          {userData.data?.enrolledCourses.length == 0 ? (
             <h1>You haven't enrolled yet</h1>
           ) : (
-            ourEnrolledCourses.map((_, index) => <Course key={index} />)
+            userData.data?.enrolledCourses.map((course, index) => (
+              <Course course={course} key={index} />
+            ))
           )}
         </div>
       </div>
-    </div>
-  );
-};
-
-const UserDetail = ({ title, value }) => {
-  return (
-    <div className="mb-2">
-      <h1 className="font-semibold text-gray-900 dark:text-gray-100 ">
-        {title}:
-        <span className="font-normal text-gray-700 dark:text-gray-300 ml-2">
-          {title !== "Role" ? value : value.toUpperCase()}
-        </span>
-      </h1>
     </div>
   );
 };

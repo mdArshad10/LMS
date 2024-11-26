@@ -96,7 +96,7 @@ const getUser = AsyncHandler(async (req, res, next) => {
 	const user = req.user;
 	res.status(StatusCodes.OK).json({
 		success: true,
-		message: 'User logged out successfully',
+		message: 'User get the user successfully',
 		data: user,
 	});
 });

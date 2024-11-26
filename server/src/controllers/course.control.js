@@ -116,7 +116,7 @@ const instructorGetAllCourses = AsyncHandler(async (req, res, next) => {
 		createdAt: -1,
 	});
 	if (courses.length === 0) {
-		return res.status(StatusCodes.NOT_FOUND).json({
+		return res.status(StatusCodes.OK).json({
 			success: true,
 			message: 'No courses found',
 			courses: [],

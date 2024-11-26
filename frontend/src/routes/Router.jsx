@@ -36,7 +36,7 @@ export const router = createBrowserRouter(
 
         <Route path="admin" element={<Sidebar />}>
           <Route path="dashboard" element={<Dashboard />} />
-          <Route path="courses">
+          <Route path="course">
             <Route index element={<CourseTab />} />
             <Route path="create" element={<AddCoursePage />} />
             <Route path=":courseId" element={<EditCoursePage />} />

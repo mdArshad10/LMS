@@ -1,7 +1,8 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
-import authReducers from "../features/authSlice.js";
+import authReducers, { userLoggedIn } from "../features/authSlice.js";
 import { setupListeners } from "@reduxjs/toolkit/query";
 import { basicApi } from "../features/basicApiSlice.js";
+import { useDispatch } from "react-redux";
 
 const rootReducer = combineReducers({
   [basicApi.reducerPath]: basicApi.reducer,
@@ -15,6 +16,14 @@ export const store = configureStore({
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(basicApi.middleware),
 });
+
+const initializeApp = async () => {
+  await store.dispatch(
+    basicApi.endpoints.getProfile.initiate({}, { forceRefetch: true })
+  );
+};
+
+initializeApp();
 
 // optional, but required for refetchOnFocus/refetchOnReconnect behaviors
 // see `setupListeners` docs - takes an optional callback as the 2nd arg for customization

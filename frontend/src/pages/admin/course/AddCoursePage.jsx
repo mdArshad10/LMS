@@ -10,18 +10,23 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useCreateCourseMutation } from "@/features/api/courseApiSlice";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 
 const AddCoursePage = () => {
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
     formState: { errors },
     reset,
+    
   } = useForm();
 
-  const isLoading = false;
+  const [createCourse, { isLoading, data, isError, error }] =
+    useCreateCourseMutation();
 
   const getSelectedCategory = (value) => {
     setCategory(value);
@@ -48,8 +53,6 @@ const AddCoursePage = () => {
           <Label>Title</Label>
           <Input
             type="text"
-            // value={courseTitle}
-            // onChange={(e) => setCourseTitle(e.target.value)}
             {...register("courseTitle", {
               required: "Course's Tile is required",
             })}
@@ -58,7 +61,7 @@ const AddCoursePage = () => {
         </div>
         <div>
           <Label>Category</Label>
-          <Select {...register("category")}>
+          <Select {...register('category')}>
             <SelectTrigger className="w-[180px]">
               <SelectValue placeholder="Select a category" />
             </SelectTrigger>
@@ -86,7 +89,9 @@ const AddCoursePage = () => {
           </Select>
         </div>
         <div className="flex item-center gap-2">
-          <Button variant="outline">Back</Button>
+          <Button variant="outline" onClick={() => navigate(`/admin/course`)}>
+            Back
+          </Button>
           <Button disabled={isLoading} type="submit">
             {isLoading ? (
               <>
