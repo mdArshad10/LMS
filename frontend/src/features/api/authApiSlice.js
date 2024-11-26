@@ -22,9 +22,9 @@ const authApiSlice = basicApi.injectEndpoints({
           const response = await queryFulfilled;
           console.log(response.data.data);
 
-          dispatch(userLoggedIn({ user: response.data.data }));
+          dispatch(userLoggedIn({ user: response.data }));
         } catch (error) {
-          console.log(err);
+          console.log(error);
         }
       },
     }),

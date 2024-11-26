@@ -38,7 +38,7 @@ const CourseTable = () => {
           No Course Found
         </div>
       ) : (
-        <Table>
+        <Table className="mt-5">
           <TableCaption>A list of your recent invoices.</TableCaption>
           <TableHeader>
             <TableRow>
@@ -49,7 +49,7 @@ const CourseTable = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {data.courses.map((course, index) => (
+            {data.courses.map((course) => (
               <TableRow key={course._id}>
                 <TableCell className="font-medium">
                   {course.coursePrice || "NA"}

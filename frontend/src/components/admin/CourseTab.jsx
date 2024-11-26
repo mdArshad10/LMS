@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -24,9 +23,11 @@ import RichTextEditor from "../RichTextEditor";
 import {
   useEditCourseMutation,
   useGetCourseByIdQuery,
+  useTogglePublishCourseMutation,
 } from "@/features/api/courseApiSlice";
 import { toast } from "sonner";
 import { useNavigate, useParams } from "react-router-dom";
+import { Loader2 } from "lucide-react";
 
 const CourseTab = () => {
   const [input, setInput] = useState({
@@ -36,21 +37,19 @@ const CourseTab = () => {
   const [previewThumbnail, setPreviewThumbnail] = useState("");
 
   const navigate = useNavigate();
-  const params = useParams();
-  const courseId = params.courseId;
+  const { courseId } = useParams();
 
   const {
     data: courseDataGetByCourseId,
     isLoading: loadingCourseByCourseId,
     refetch,
   } = useGetCourseByIdQuery(courseId, { refetchOnMountOrArgChange: true });
+  
+  const [togglePublishCourse,{isLoading:toggleCourseLoading, isError:toggleCourseError}] = useTogglePublishCourseMutation();
 
-  const [editCourse, { isSuccess, isLoading, data, isError, error }] =
-    useEditCourseMutation();
+  // const [editCourse, { isSuccess, isLoading, data, isError, error }] =
+  //   useEditCourseMutation();
 
-  // const existingCourseDetail = courseDataGetByCourseId?.course;
-
-  const isPublished = true;
   const {
     register,
     reset,
@@ -86,17 +85,33 @@ const CourseTab = () => {
     reset();
   };
 
-  useEffect(() => {
-    if (isSuccess) {
-      toast.success(data.message || "Course updated successfully");
-      refetch();
-    }
-    if (isError) {
-      toast.error(error.message || "Failed to update the course");
-    }
-  }, [isSuccess, isError]);
 
-  return (
+
+
+  // useEffect(() => {
+  //   if (isSuccess) {
+  //     toast.success(data.message || "Course updated successfully");
+  //     refetch();
+  //   }
+  //   if (isError) {
+  //     toast.error(error.message || "Failed to update the course");
+  //   }
+  // }, [isSuccess, isError]);
+  const isLoading = false;
+
+  const ontoggleParticularCourse = async (courseId) => {
+    console.log(courseId);
+  };
+
+  const onRemoveParticularCourse = async (courseId) => {
+    console.log(courseId);
+  };
+
+  return loadingCourseByCourseId ? (
+    <div className="flex items-center justify-center h-screen">
+      <Loader2 className="animate-spin" />
+    </div>
+  ) : (
     <Card>
       <CardHeader className="flex flex-row justify-between">
         <div>
@@ -106,10 +121,23 @@ const CourseTab = () => {
           </CardDescription>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline">
-            {isPublished ? "Published" : "Unpublished"}
+          <Button
+            variant="outline"
+            onClick={() =>
+              ontoggleParticularCourse(courseDataGetByCourseId.course?._id)
+            }
+          >
+            {courseDataGetByCourseId.course?.isPublished
+              ? "Published"
+              : "Unpublished"}
           </Button>
-          <Button>Remove Course</Button>
+          <Button
+            onClick={() =>
+              onRemoveParticularCourse(courseDataGetByCourseId.course?._id)
+            }
+          >
+            Remove Course
+          </Button>
         </div>
       </CardHeader>
       <CardContent>
@@ -120,9 +148,11 @@ const CourseTab = () => {
               <Input
                 type="text"
                 {...register("courseTitle")}
-                // defaultValue={
-                //   existingCourseDetail ? existingCourseDetail.title : ""
-                // }
+                defaultValue={
+                  courseDataGetByCourseId.course?.courseTitle
+                    ? courseDataGetByCourseId.course?.courseTitle
+                    : ""
+                }
                 placeholder="Ex. Fullstack developer"
               />
             </div>
@@ -131,6 +161,11 @@ const CourseTab = () => {
               <Input
                 type="text"
                 {...register("subTitle")}
+                defaultValue={
+                  courseDataGetByCourseId.course?.subTitle
+                    ? courseDataGetByCourseId.course?.subTitle
+                    : ""
+                }
                 placeholder="Ex. Become a Fullstack developer from zero to hero in 2 months"
               />
             </div>
@@ -142,7 +177,11 @@ const CourseTab = () => {
               <div>
                 <Label>Category</Label>
                 <Select
-                  //   defaultValue={input.category}
+                  defaultValue={
+                    courseDataGetByCourseId.course?.category
+                      ? courseDataGetByCourseId.course?.category
+                      : ""
+                  }
                   //   onValueChange={selectCategory}
                   {...register("category")}
                 >
@@ -152,6 +191,7 @@ const CourseTab = () => {
                   <SelectContent>
                     <SelectGroup>
                       <SelectLabel>Category</SelectLabel>
+                      <SelectItem value="React JS">React JS</SelectItem>
                       <SelectItem value="Next JS">Next JS</SelectItem>
                       <SelectItem value="Data Science">Data Science</SelectItem>
                       <SelectItem value="Frontend Development">
@@ -175,7 +215,11 @@ const CourseTab = () => {
               <div>
                 <Label>Course Level</Label>
                 <Select
-                  //   defaultValue={input.courseLevel}
+                  defaultValue={
+                    courseDataGetByCourseId.course?.courseLevel
+                      ? courseDataGetByCourseId.course?.courseLevel
+                      : ""
+                  }
                   //   onValueChange={selectCourseLevel}
                   {...register("courseLevel")}
                 >
@@ -197,6 +241,11 @@ const CourseTab = () => {
                 <Input
                   type="number"
                   {...register("price")}
+                  defaultValue={
+                    courseDataGetByCourseId.course?.coursePrice
+                      ? courseDataGetByCourseId.course?.coursePrice
+                      : ""
+                  }
                   placeholder="Ex. 100"
                   className="w-fit"
                 />

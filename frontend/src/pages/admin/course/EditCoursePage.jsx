@@ -1,6 +1,5 @@
 import CourseTab from "@/components/admin/CourseTab";
 import { Button } from "@/components/ui/button";
-import React from "react";
 import { useNavigate } from "react-router-dom";
 
 const EditCoursePage = () => {

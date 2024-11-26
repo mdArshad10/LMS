@@ -26,7 +26,8 @@ const AddCoursePage = () => {
   } = useForm();
 
   const [createCourse, { isLoading, data, isError, error }] =
-    useCreateCourseMutation();
+    useCreateCourseMutation
+    ();
 
   const getSelectedCategory = (value) => {
     setCategory(value);
