@@ -1,4 +1,5 @@
 import CourseTab from "@/components/admin/CourseTab";
+import CourseTabTry from "@/components/admin/CourseTabTry";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 
@@ -13,7 +14,8 @@ const EditCoursePage = () => {
         </h1>
         <Button onClick={() => navigate("lecture")}>Go to lectures page</Button>
       </div>
-      <CourseTab />
+      {/* <CourseTab /> */}
+      <CourseTabTry />
     </div>
   );
 };
