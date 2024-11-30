@@ -33,6 +33,7 @@
     "quill": "^2.0.2",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "react-helmet-async": "^2.0.5",
     "react-hook-form": "^7.53.2",
     "react-player": "^2.16.0",
     "react-quilljs": "^2.0.4",
@@ -42,7 +43,8 @@
     "sonner": "^1.7.0",
     "tailwind-merge": "^2.5.4",
     "tailwindcss-animate": "^1.0.7",
-    "yup": "^1.4.0"
+    "yup": "^1.4.0",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@eslint/js": "^9.13.0",

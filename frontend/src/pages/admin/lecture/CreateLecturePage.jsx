@@ -64,6 +64,7 @@ const CreateLecturePage = () => {
         <div className="flex item-center gap-2">
           <Button
             variant="outline"
+            type="button"
             onClick={() => navigate(`/admin/course/${courseId}`)}
           >
             Back to Course
