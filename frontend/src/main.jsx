@@ -5,10 +5,14 @@ import "./index.css";
 import { Provider } from "react-redux";
 import { store } from "./app/store.js";
 import { Toaster } from "./components/ui/toaster";
+import { ThemeProvider } from "./components/ThemeProvider";
+import { Helmet, HelmetProvider } from "react-helmet-async";
 
 createRoot(document.getElementById("root")).render(
   <Provider store={store}>
-    <RouterProvider router={router} />
-    <Toaster />
+    <HelmetProvider>
+      <RouterProvider router={router} />
+      <Toaster />
+    </HelmetProvider>
   </Provider>
 );

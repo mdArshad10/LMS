@@ -18,6 +18,7 @@ import EditLecturePage from "@/pages/admin/lecture/EditLecturePage";
 import CourseDetail from "@/pages/student/CourseDetail";
 import CourseProgressPage from "@/pages/student/CourseProgressPage";
 import SearchCoursePage from "@/pages/student/SearchCoursePage";
+import EditCourseTryPage from "@/pages/admin/course/EditCourseTryPage";
 
 export const router = createBrowserRouter(
   createRoutesFromElements(
@@ -35,11 +36,12 @@ export const router = createBrowserRouter(
         <Route path="edit-profile" element={<EditProfilePage />} />
 
         <Route path="admin" element={<Sidebar />}>
-          <Route path="dashboard" element={<Dashboard />} />
+          <Route index element={<Dashboard />} />
           <Route path="course">
             <Route index element={<CourseTab />} />
             <Route path="create" element={<AddCoursePage />} />
-            <Route path=":courseId" element={<EditCoursePage />} />
+            {/* <Route path=":courseId" element={<EditCoursePage />} /> */}
+            <Route path=":courseId" element={<EditCourseTryPage />} />
             <Route path=":courseId/lecture" element={<CreateLecturePage />} />
             <Route
               path=":courseId/lecture/:lectureId"

@@ -7,8 +7,10 @@ import {
 } from "./ui/dropdown-menu";
 import { Button } from "./ui/button";
 import { Moon, Sun } from "lucide-react";
+import { useTheme } from "next-themes";
 
 const DarkMode = () => {
+  const {setTheme}=useTheme();
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -25,7 +27,9 @@ const DarkMode = () => {
         <DropdownMenuItem onClick={() => setTheme("dark")}>
           Dark
         </DropdownMenuItem>
-        
+        <DropdownMenuItem onClick={() => setTheme("system")}>
+          System
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );
