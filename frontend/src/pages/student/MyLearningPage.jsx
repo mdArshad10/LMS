@@ -1,6 +1,5 @@
 import Course from "@/components/student/course";
 import { useGetProfileQuery } from "@/features/api/authApiSlice";
-import React from "react";
 
 const MyLearningPage = () => {
   const { data: userProfileData, isLoading } = useGetProfileQuery();

@@ -35,7 +35,7 @@ const courseApiSlice = basicApi.injectEndpoints({
       }),
       transformErrorResponse: (response) => response.data.course,
     }),
-    editCourse: build.query({
+    editCourse: build.mutation({
       query: (data) => ({
         url: `/courses/${data.courseId}`,
         method: "PUT",
@@ -93,7 +93,6 @@ export const {
   useEditCourseMutation,
   useCreateLectureMutation,
   useDeleteLectureMutation,
-  useEditCourseQuery,
   useEditLectureMutation,
   useGetCourseAllLecturesQuery,
   useGetParticularLectureQuery,
