@@ -6,6 +6,8 @@ import { upload } from '../../utils/multer.js';
 const router = Router();
 
 // file upload successfully ✅
-router.route('/upload-video').post(upload.single('file'), lectureFileUpload);
+router
+	.route('/upload-video')
+	.post(verifyUser, upload.single('file'), lectureFileUpload);
 
 export default router;

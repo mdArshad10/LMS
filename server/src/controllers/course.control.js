@@ -247,8 +247,9 @@ const createLecture = AsyncHandler(async (req, res, next) => {
 	});
 });
 
-// @DESC: get a lecture of course ✅
-// @METHOD: [GET]   /api/v1/courses/:courseId/lecture
+// @DESC: get all lectures of a course ✅
+
+// @METHOD: [GET]   /api/v1/courses/:courseId/lectures
 // @ACCESS: private/instructor
 const getCourseLecture = AsyncHandler(async (req, res, next) => {
 	const { courseId } = req.params;
