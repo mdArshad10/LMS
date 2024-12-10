@@ -16,11 +16,11 @@ const MyLearningPage = () => {
         <div className="my-5">
           {isLoading ? (
             <MyLearningSkeleton />
-          ) : userProfileData.data?.enrolledCourses.length === 0 ? (
+          ) : userProfileData.user?.enrolledCourses.length === 0 ? (
             <p>No Course is purchase</p>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-              {userProfileData.data?.enrolledCourses.map((course, index) => (
+              {userProfileData.user?.enrolledCourses.map((course, index) => (
                 <Course course={course} key={index} />
               ))}
             </div>

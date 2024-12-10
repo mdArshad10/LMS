@@ -3,9 +3,11 @@ import { Button } from "../ui/button";
 import { Loader2 } from "lucide-react";
 import { useCreateCheckoutSessionsMutation } from "@/features/api/purchaseApiSlice";
 import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 
 const BuyCoursePurchaseButton = ({ courseId }) => {
-  //   const isLoading = false;
+  const navigate = useNavigate();
+  console.log(courseId);
 
   const [
     createCheckoutSessions,
@@ -13,7 +15,17 @@ const BuyCoursePurchaseButton = ({ courseId }) => {
   ] = useCreateCheckoutSessionsMutation();
 
   const purchaseCourseHandler = async () => {
-    await createCheckoutSessions(courseId).unwrap();
+    try {
+      console.log(courseId);
+
+      const response = await createCheckoutSessions({courseId});
+      console.log(response);
+
+      // navigate()
+    } catch (err) {
+      console.log(err);
+      console.log(error);
+    }
   };
 
   useEffect(() => {

@@ -1,11 +1,10 @@
 import { Button } from "@/components/ui/button";
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import {
   Table,
   TableBody,
   TableCaption,
   TableCell,
-  TableFooter,
   TableHead,
   TableHeader,
   TableRow,
@@ -19,7 +18,12 @@ import { Edit } from "lucide-react";
 const CourseTable = () => {
   const navigate = useNavigate();
 
-  const { data, isLoading, isSuccess, error } = useGetCreatorCourseQuery();
+  const { data, isLoading, isSuccess, error, refetch } =
+    useGetCreatorCourseQuery();
+
+  useEffect(() => {
+    refetch();
+  }, []);
 
   useEffect(() => {
     if (isSuccess) {

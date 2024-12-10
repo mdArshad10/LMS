@@ -38,15 +38,16 @@ const authApiSlice = basicApi.injectEndpoints({
           const response = await queryFulfilled;
           dispatch(userLoggedOut());
         } catch (error) {
-          
+          console.log(error);
         }
-      }
+      },
     }),
     updateProfile: build.mutation({
-      query: (data) => ({
+      query: (formData) => ({
         url: "/users",
         method: "PUT",
-        body: data,
+        body: formData,
+        credentials: "include",
       }),
     }),
     getProfile: build.query({
@@ -57,7 +58,7 @@ const authApiSlice = basicApi.injectEndpoints({
       async onQueryStarted(_, { queryFulfilled, dispatch }) {
         try {
           const response = await queryFulfilled;
-          dispatch(userLoggedIn({ User: response.data.user }));
+          dispatch(userLoggedIn(response.data.user));
         } catch (error) {
           console.log(error);
         }

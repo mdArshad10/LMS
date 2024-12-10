@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
-const baseUrl = `${import.meta.env.VITE_BACKEND_URL}/api/v1`;
+export const baseUrl = `${import.meta.env.VITE_BACKEND_URL}/api/v1`;
 
 export const basicApi = createApi({
   baseQuery: fetchBaseQuery({
@@ -11,7 +11,6 @@ export const basicApi = createApi({
       if (token) {
         Headers.set("authorization", `Bearer ${token}`);
       }
-      Headers.set("Content-Type", "application/json");
       return Headers;
     },
   }),

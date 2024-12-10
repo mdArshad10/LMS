@@ -4,7 +4,7 @@ export const purchaseCourseValidator = {
 	checkoutSession: [
 		body('courseId')
 			.notEmpty()
-			.withMessage('Course ID is required')
+			.withMessage('CourseID is required')
 			.isMongoId()
 			.withMessage('courserId is invalid'),
 	],

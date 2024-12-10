@@ -1,4 +1,6 @@
 import mongoose from 'mongoose';
+import { ErrorHandler } from '../utils/error.js';
+import { Lectures } from '../models/lecture.model.js';
 
 const courseSchema = new mongoose.Schema(
 	{
@@ -50,5 +52,15 @@ const courseSchema = new mongoose.Schema(
 	},
 	{ timestamps: true },
 );
+
+courseSchema.pre('deleteOne', { document: true }, async function (next) {
+	try {
+		if (this.$isEmpty('lectures')) next();
+		await Lectures.deleteMany({ _id: { $in: this.lectures } });
+		next();
+	} catch (error) {
+		next(new ErrorHandler(error.message, 404));
+	}
+});
 
 export const Courses = mongoose.model('Course', courseSchema);

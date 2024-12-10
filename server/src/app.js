@@ -21,7 +21,7 @@ const limiter = rateLimit({
 	// store: ... , // Redis, Memcached, etc. See below.
 });
 
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(express.json());
 app.use(morgan('dev'));
 app.use(helmet());
@@ -29,9 +29,13 @@ app.use(cookieParser());
 app.use(
 	cors({
 		origin: ORIGIN_URL,
-		credentials: true,
-		allowedHeaders: ['Content-Type', 'Authorization'],
 		methods: ['GET', 'POST', 'PUT', 'DELETE'],
+		allowedHeaders: [
+			'Content-Type',
+			'Authorization',
+			'Access-Control-Allow-Credentials',
+		],
+		credentials: true,
 	}),
 );
 app.use(mongoSanitize());

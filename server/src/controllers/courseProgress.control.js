@@ -17,7 +17,7 @@ const getCourseProgress = AsyncHandler(async (req, res, next) => {
 		userId,
 	}).populate('courseId');
 
-	const courseDetails = await Courses.findById(courseId);
+	const courseDetails = await Courses.findById(courseId).populate('lectures');
 
 	if (!courseDetails) {
 		return next(

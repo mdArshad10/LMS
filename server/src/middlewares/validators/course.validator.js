@@ -135,13 +135,18 @@ export const courseValidator = {
 				'Lecture Title must be at least 5 characters and at most 100 characters',
 			)
 			.escape(),
-		body('videoUrl')
+		body('videoUrl').isObject().withMessage('Video URL must be an object'),
+
+		body('videoUrl.url')
 			.trim()
 			.notEmpty()
 			.withMessage('Video URL is required')
 			.isURL()
-			.withMessage('Please enter a valid URL for the video')
-			.escape(),
+			.withMessage('Invalid Video URL'),
+		body('videoUrl.public_id')
+			.trim()
+			.notEmpty()
+			.withMessage('Video URL is required'),
 		body('isPreviewFree')
 			.trim()
 			.notEmpty()

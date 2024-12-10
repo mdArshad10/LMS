@@ -1,12 +1,13 @@
 import Navbar from "@/components/Navbar";
-import React from "react";
 import { Outlet } from "react-router-dom";
+import { Toaster } from "sonner";
 
 const MainLayout = () => {
   return (
     <div>
       <Navbar />
       <Outlet />
+      <Toaster />
     </div>
   );
 };

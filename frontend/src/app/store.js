@@ -2,7 +2,6 @@ import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import authReducers, { userLoggedIn } from "../features/authSlice.js";
 import { setupListeners } from "@reduxjs/toolkit/query";
 import { basicApi } from "../features/basicApiSlice.js";
-import { useDispatch } from "react-redux";
 
 const rootReducer = combineReducers({
   [basicApi.reducerPath]: basicApi.reducer,

@@ -184,6 +184,22 @@ const editCourse = AsyncHandler(async (req, res, next) => {
 	});
 });
 
+// @DESC: delete the particular course ✅
+// @METHOD: [DELETE]   /api/v1/courses/:courseId
+// @ACCESS: private
+const deleteCourse = AsyncHandler(async (req, res, next) => {
+	const { courseId } = req.params;
+	const course = await Courses.findById(courseId);
+	if (!course) {
+		return next(new ErrorHandler('course is not found', 400));
+	}
+
+	await course.deleteOne();
+	res.status(200).json({
+		message: 'Course and associated lectures deleted successfully',
+	});
+});
+
 // @DESC: get particular course by courseId ✅
 // @METHOD: [GET]   /api/v1/courses/:courseId
 // @ACCESS: private/instructor
@@ -394,4 +410,5 @@ export {
 	removeLecture,
 	togglePublishCourse,
 	getPublishedCourse,
+	deleteCourse,
 };

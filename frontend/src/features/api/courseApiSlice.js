@@ -6,7 +6,7 @@ const courseApiSlice = basicApi.injectEndpoints({
       query: (data) => ({
         url: "/courses",
         method: "POST",
-        data,
+        body: data,
       }),
     }),
     getCreatorCourse: build.query({
@@ -36,17 +36,27 @@ const courseApiSlice = basicApi.injectEndpoints({
       transformErrorResponse: (response) => response.data.course,
     }),
     editCourse: build.mutation({
-      query: (data) => ({
-        url: `/courses/${data.courseId}`,
+      query: ({ formData, courseId }) => ({
+        url: `/courses/${courseId}`,
         method: "PUT",
-        body: data,
+        body: formData,
+        headers: {
+          "content-type": "multipart/form-data",
+        },
+        credentials: "include",
+      }),
+    }),
+    deleteCourses: build.mutation({
+      query: (courseId) => ({
+        url: `/courses/${courseId}`,
+        method: "DELETE",
       }),
     }),
 
     // ===== lecture Routes ======
     createLecture: build.mutation({
-      query: (data) => ({
-        url: `/courses/${data.courseId}/lectures`,
+      query: ({ data, courseId }) => ({
+        url: `/courses/${courseId}/lectures`,
         method: "POST",
         body: data,
       }),
@@ -60,15 +70,15 @@ const courseApiSlice = basicApi.injectEndpoints({
     }),
 
     getParticularLecture: build.query({
-      query: (courseId, lectureId) => ({
-        url: `/courses/${courseId}/lectures/${lectureId}`,
+      query: (lectureId) => ({
+        url: `/courses/lectures/${lectureId}`,
         method: "GET",
       }),
     }),
 
     editLecture: build.mutation({
-      query: (data) => ({
-        url: `/courses/${data.courseId}/lectures/${data.lectureId}`,
+      query: ({ data, lectureId, courseId }) => ({
+        url: `/courses/${courseId}/lectures/${lectureId}`,
         method: "PUT",
         body: data,
       }),
@@ -96,6 +106,7 @@ export const {
   useEditLectureMutation,
   useGetCourseAllLecturesQuery,
   useGetParticularLectureQuery,
+  useDeleteCoursesMutation,
 } = courseApiSlice;
 
 // seGetCourseLectureQuery;

@@ -9,7 +9,6 @@ import {
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -22,23 +21,23 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import React from "react";
 import { useForm } from "react-hook-form";
 
 const EditCourseTryPage = () => {
+  const { courseId } = useParams();
   const form = useForm({
-    defaultValues: {
-      username: "",
-      email: "",
-      confirmEmail: "",
-    },
     mode: "onChange",
   });
+
+ 
+
   const onSubmit = async (data) => {
     console.log(data);
     form.reset();
   };
-  return (
+  return loadingCourseByCourseId ? (
+    <p>Loading...</p>
+  ) : (
     <Card>
       <CardHeader className="flex flex-row justify-between">
         <div>

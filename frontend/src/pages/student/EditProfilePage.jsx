@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+/* eslint-disable react/no-unescaped-entities */
+import { useEffect, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -10,7 +11,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
+
 import { Label } from "@/components/ui/label";
 import { Loader2 } from "lucide-react";
 import Course from "@/components/student/course";
@@ -24,6 +25,7 @@ import PageHeader from "@/components/PageHeader";
 const EditProfilePage = () => {
   const [name, setName] = useState("");
   // TODO: add the profile photo using the use-hook-form
+  // eslint-disable-next-line no-unused-vars
   const [profilePhoto, setProfilePhoto] = useState("");
 
   const {
@@ -52,13 +54,18 @@ const EditProfilePage = () => {
   };
 
   const onChangeProfileDetails = async () => {
-    const formData = new FormData();
-    formData.append("name", name);
-    formData.append("profilePhoto", profilePhoto);
     try {
-      await updateProfile(formData).unwrap();
+      const formData = new FormData();
+      formData.append("name", name);
+      formData.append("avatar", profilePhoto);
+      console.log(formData.get("name"));
+      // console.log(formData.get("avatar"));
+
+      await updateProfile(formData);
     } catch (error) {
       console.log(error);
+      console.log("something wrong with updating the profile");
+      console.log(updateProfileError);
     }
   };
 
@@ -69,14 +76,12 @@ const EditProfilePage = () => {
   useEffect(() => {
     if (isSuccess) {
       refetch();
-      toast.success(data.message || "profile updated successfully");
+      toast.success(userUpdateData.message || "profile updated successfully");
     }
     if (isError) {
       toast.error(updateProfileError.message || "Failed to update the profile");
     }
   }, [isSuccess, userUpdateData, updateProfileError, isError]);
-
-  console.log(getProfileLoading);
 
   return (
     <>
@@ -96,8 +101,14 @@ const EditProfilePage = () => {
           <div className="flex flex-col md:flex-row items-center md:items-start gap-8 my-5">
             <div className="flex flex-col items-center">
               <Avatar className="h-24 w-24 md:h-32 md:w-32 mb-4">
-                <AvatarImage src="https://github.com/shadcn.png" />
-                <AvatarFallback>CN</AvatarFallback>
+                {/* <AvatarImage src="https://github.com/shadcn.png" /> */}
+                <AvatarImage
+                  src={
+                    userData.user?.photoUrl?.url ||
+                    "https://github.com/shadcn.png"
+                  }
+                />
+                <AvatarFallback>{userData.user?.name || "AD"}</AvatarFallback>
               </Avatar>
             </div>
             <div>
@@ -105,7 +116,7 @@ const EditProfilePage = () => {
                 <h1 className="font-semibold text-gray-900 dark:text-gray-100 ">
                   Name :
                   <span className="font-normal text-gray-700 dark:text-gray-300 ml-2">
-                    {userData.data.name}
+                    {userData.user?.name}
                   </span>
                 </h1>
               </div>
@@ -113,7 +124,7 @@ const EditProfilePage = () => {
                 <h1 className="font-semibold text-gray-900 dark:text-gray-100 ">
                   Email :
                   <span className="font-normal text-gray-700 dark:text-gray-300 ml-2">
-                    {userData.data.email}
+                    {userData.user?.email}
                   </span>
                 </h1>
               </div>
@@ -121,7 +132,7 @@ const EditProfilePage = () => {
                 <h1 className="font-semibold text-gray-900 dark:text-gray-100 ">
                   Role :
                   <span className="font-normal text-gray-700 dark:text-gray-300 ml-2">
-                    {userData.data.role.toUpperCase()}
+                    {userData.user?.role?.toUpperCase()}
                   </span>
                 </h1>
               </div>
@@ -189,10 +200,10 @@ const EditProfilePage = () => {
           <div>
             <h1 className="font-medium text-lg">Course you're enrolled</h1>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 my-5">
-              {userData.data?.enrolledCourses.length == 0 ? (
+              {userData.user?.enrolledCourses.length == 0 ? (
                 <h1>You haven't enrolled yet</h1>
               ) : (
-                userData.data?.enrolledCourses.map((course, index) => (
+                userData.user?.enrolledCourses.map((course, index) => (
                   <Course course={course} key={index} />
                 ))
               )}

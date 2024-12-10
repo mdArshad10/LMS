@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { courseValidator } from '../../middlewares/validators/course.validator.js';
-import {  verifyUser } from '../../middlewares/verify.js';
+import { verifyUser } from '../../middlewares/verify.js';
 import {
 	createCourse,
 	getPublishedCourse,
@@ -14,9 +14,10 @@ import {
 	togglePublishCourse,
 	removeLecture,
 	searchCourse,
+	deleteCourse,
 } from '../../controllers/course.control.js';
 import { upload } from '../../utils/multer.js';
-import validate  from '../../middlewares/validate.js';
+import validate from '../../middlewares/validate.js';
 
 const router = Router();
 
@@ -50,7 +51,9 @@ router
 		courseValidator.togglePublishCourse,
 		validate,
 		togglePublishCourse,
-	);
+	)
+	// delete the course
+	.delete(deleteCourse);
 
 // edit the course ✅
 router

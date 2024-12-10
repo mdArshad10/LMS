@@ -39,7 +39,7 @@ const registerUser = AsyncHandler(async (req, res, next) => {
 	res.status(StatusCodes.CREATED).cookie('token', token, cookieOption).json({
 		success: true,
 		message: 'User created successfully',
-		data: userDate,
+		user: userDate,
 	});
 });
 
@@ -93,11 +93,22 @@ const logoutUser = AsyncHandler(async (req, res, next) => {
 // @METHOD: [GET]   /api/v1/users
 // @ACCESS: private
 const getUser = AsyncHandler(async (req, res, next) => {
-	const user = req.user;
+	const userId = req.user._id;
+	const user = await Users.findById(userId)
+		.select('-password')
+		.populate({
+			path: 'enrolledCourses',
+			populate: {
+				path: 'creator',
+				model: 'User',
+			},
+		})
+		.exec();
+
 	res.status(StatusCodes.OK).json({
 		success: true,
 		message: 'User get the user successfully',
-		data: user,
+		user,
 	});
 });
 
@@ -106,6 +117,8 @@ const getUser = AsyncHandler(async (req, res, next) => {
 // @ACCESS: private
 const updateUser = AsyncHandler(async (req, res, next) => {
 	const { name } = req.body;
+	console.log(name);
+
 	const profileUrl = req.file?.path;
 	// check the file
 	if (!req.file && !profileUrl) {

@@ -8,6 +8,6 @@ const router = Router();
 // file upload successfully ✅
 router
 	.route('/upload-video')
-	.post(verifyUser, upload.single('file'), lectureFileUpload);
+	.post(upload.single('lecture'), lectureFileUpload);
 
 export default router;

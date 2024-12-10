@@ -10,7 +10,6 @@ import {
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { BadgeInfo, Lock, PlayCircle } from "lucide-react";
-import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import ReactPlayer from "react-player";
 import { useGetCourseDetailWithStatusQuery } from "@/features/api/purchaseApiSlice";
@@ -26,7 +25,7 @@ const CourseDetail = () => {
   if (isLoading) return <p>Loading...</p>;
   if (isError) return <p>Error fetching course data</p>;
   const { course, purchased } = data;
-  console.log(course);
+
 
   const handleContinueCourse = () => {
     if (purchasedCourse) {
@@ -97,10 +96,14 @@ const CourseDetail = () => {
                     controls={true}
                   />
                 </div>
-                <h1>Lecture Tile</h1>
+                <h1>{course.lectures[0].lectureTitle}</h1>
                 <Separator className="my-2" />
                 <h1 className="text-lg md:text-xl font-semibold">
-                  Course Price
+                  {purchased ? (
+                    <span> Purchased</span>
+                  ) : (
+                    <span>Course Price: Rs. {course.coursePrice}</span>
+                  )}
                 </h1>
               </CardContent>
               <CardFooter className="flex justify-center p-4">

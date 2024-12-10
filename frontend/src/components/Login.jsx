@@ -15,9 +15,13 @@ import { Loader2 } from "lucide-react";
 import { useEffect } from "react";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { userLoggedIn } from "../features/authSlice";
 
 const Login = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
   const {
     handleSubmit,
     register,
@@ -31,14 +35,15 @@ const Login = () => {
   ] = useLoginMutation();
 
   const handleLoginSubmit = async (data) => {
-    await login(data).unwrap();
+    const response = await login(data).unwrap();
+    dispatch(userLoggedIn(response.data));
+    navigate("/");
     reset();
   };
 
   useEffect(() => {
     if (isSuccess && loginUserData) {
       toast.success(loginUserData.message);
-      navigate("/");
     }
 
     if (loginUserError) {

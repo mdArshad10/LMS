@@ -12,23 +12,27 @@ const courseProgressApiSlice = basicApi.injectEndpoints({
     updateLectureProgress: builder.mutation({
       query: (data) => ({
         url: `/course-progress/${data.courseId}/lectures/${data.lectureId}/view`,
-        method: "PUT",
-        body: data,
+        method: "POST",
       }),
     }),
-    markCourseCompleted: builder.query({
+    markCourseCompleted: builder.mutation({
       query: (courseId) => ({
         url: `/course-progress/${courseId}/complete`,
-        method: "PUT",
+        method: "POST",
       }),
     }),
-    markCourseInComplete: builder.query({
+    markCourseInComplete: builder.mutation({
       query: (courseId) => ({
-        url: `/courses-progress/${courseId}/incomplete`,
-        method: "PUT",
+        url: `/course-progress/${courseId}/incomplete`,
+        method: "POST",
       }),
     }),
   }),
 });
 
-const {} = courseProgressApiSlice;
+export const {
+  useMarkCourseCompletedMutation,
+  useGetCourseProgressQuery,
+  useMarkCourseInCompleteMutation,
+  useUpdateLectureProgressMutation
+} = courseProgressApiSlice;
