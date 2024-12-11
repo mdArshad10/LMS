@@ -1,3 +1,9 @@
+import { config } from 'dotenv';
+
+config({
+	path: './.env',
+});
+
 const NODE_ENV = process.env.NODE_ENV;
 const PORT = process.env.PORT;
 const MONGO_URL = process.env.MONGO_URL;

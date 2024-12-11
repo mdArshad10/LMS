@@ -4,7 +4,7 @@
 	"main": "server.js",
 	"type": "module",
 	"scripts": {
-		"start": "node --env-file=.env src/server.js",
+		"start": "node src/server.js",
 		"product:start": "node --env-file=.env src/server.js",
 		"server": "nodemon --env-file=.env src/server.js"
 	},
@@ -17,6 +17,7 @@
 		"cloudinary": "^2.5.1",
 		"cookie-parser": "^1.4.7",
 		"cors": "^2.8.5",
+		"dotenv": "^16.4.7",
 		"express": "^4.21.1",
 		"express-mongo-sanitize": "^2.2.0",
 		"express-rate-limit": "^7.4.1",
