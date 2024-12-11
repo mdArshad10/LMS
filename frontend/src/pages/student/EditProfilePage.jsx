@@ -14,7 +14,7 @@ import {
 
 import { Label } from "@/components/ui/label";
 import { Loader2 } from "lucide-react";
-import Course from "@/components/student/course";
+import Course from "@/components/student/Course";
 import {
   useGetProfileQuery,
   useUpdateProfileMutation,

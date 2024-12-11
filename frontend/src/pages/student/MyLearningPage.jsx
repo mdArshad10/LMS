@@ -1,5 +1,5 @@
 import PageHeader from "@/components/PageHeader";
-import Course from "@/components/student/course";
+import Course from "@/components/student/Course";
 import { useGetProfileQuery } from "@/features/api/authApiSlice";
 
 const MyLearningPage = () => {

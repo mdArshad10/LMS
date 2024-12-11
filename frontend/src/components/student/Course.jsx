@@ -13,7 +13,6 @@ const Course = ({ course }) => {
             src={course.courseThumbnail?.url || "https://github.com/shadcn.png"}
             alt="course"
             className="w-full h-36 object-cover rounded-t-lg"
-            crossOrigin="anonymous"
           />
         </CardHeader>
         <CardContent>
