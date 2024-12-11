@@ -14,13 +14,15 @@ import { useLoginMutation } from "@/features/api/authApiSlice";
 import { Loader2 } from "lucide-react";
 import { useEffect } from "react";
 import { toast } from "sonner";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { userLoggedIn } from "../features/authSlice";
 
 const Login = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || "/";
 
   const {
     handleSubmit,
@@ -31,25 +33,22 @@ const Login = () => {
 
   const [
     login,
-    { isLoading, error: loginUserError, data: loginUserData, isSuccess },
+    { isLoading, data: loginUserData, isSuccess },
   ] = useLoginMutation();
 
   const handleLoginSubmit = async (data) => {
     const response = await login(data).unwrap();
     dispatch(userLoggedIn(response.data));
-    navigate("/");
+    navigate(from, { replace: false });
     reset();
   };
+
 
   useEffect(() => {
     if (isSuccess && loginUserData) {
       toast.success(loginUserData.message);
     }
-
-    if (loginUserError) {
-      toast.error(loginUserError.message);
-    }
-  }, [isSuccess, loginUserError, loginUserData]);
+  }, [isSuccess, loginUserData]);
 
   return (
     <form onSubmit={handleSubmit(handleLoginSubmit)}>

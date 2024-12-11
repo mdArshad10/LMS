@@ -21,11 +21,10 @@ import {
 } from "@/features/api/authApiSlice";
 import { toast } from "sonner";
 import PageHeader from "@/components/PageHeader";
+import SpinnerLoading from "@/components/SpinnerLoading";
 
 const EditProfilePage = () => {
   const [name, setName] = useState("");
-  // TODO: add the profile photo using the use-hook-form
-  // eslint-disable-next-line no-unused-vars
   const [profilePhoto, setProfilePhoto] = useState("");
 
   const {
@@ -58,14 +57,12 @@ const EditProfilePage = () => {
       const formData = new FormData();
       formData.append("name", name);
       formData.append("avatar", profilePhoto);
-      console.log(formData.get("name"));
-      // console.log(formData.get("avatar"));
 
       await updateProfile(formData);
     } catch (error) {
-      console.log(error);
-      console.log("something wrong with updating the profile");
-      console.log(updateProfileError);
+      toast.error(
+        error.message || "Failed to update the profile, plz try again"
+      );
     }
   };
 
@@ -90,7 +87,7 @@ const EditProfilePage = () => {
         description={"this is the profile edit page"}
       />
       {getProfileLoading ? (
-        <p>...loading</p>
+        <SpinnerLoading/>
       ) : getProfileErrorLoading ? (
         <div>Not Error</div>
       ) : (
@@ -101,7 +98,6 @@ const EditProfilePage = () => {
           <div className="flex flex-col md:flex-row items-center md:items-start gap-8 my-5">
             <div className="flex flex-col items-center">
               <Avatar className="h-24 w-24 md:h-32 md:w-32 mb-4">
-                {/* <AvatarImage src="https://github.com/shadcn.png" /> */}
                 <AvatarImage
                   src={
                     userData.user?.photoUrl?.url ||

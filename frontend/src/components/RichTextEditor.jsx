@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { useQuill } from "react-quilljs";
 
 import "quill/dist/quill.snow.css"; // Add css for snow theme
-// or import 'quill/dist/quill.bubble.css'; // Add css for bubble theme
+
 
 const RichTextEditor = ({ field }) => {
   const { quill, quillRef } = useQuill({ placeholder: "Add the Description" });

@@ -19,7 +19,7 @@ import {
 } from "@/features/api/courseApiSlice";
 import { toast } from "sonner";
 import axios from "axios";
-import { baseUrl } from "@/features/basicApiSlice";
+import { baseUrl } from "@/app/data";
 import { Progress } from "../ui/progress";
 import { useNavigate } from "react-router-dom";
 
@@ -62,7 +62,6 @@ const LectureTab = ({ courseId, lectureId }) => {
 
   const lectureUpdateHandler = async (data) => {
     try {
-      console.log(data);
       await editLecture({ data: data, courseId, lectureId });
       form.reset();
     } catch (error) {
@@ -91,7 +90,6 @@ const LectureTab = ({ courseId, lectureId }) => {
           setUploadProgress(Math.round((loaded * 100) / total));
         },
       });
-      console.log(resp);
 
       if (resp.data?.success) {
         form.setValue("videoUrl", resp.data?.data);
@@ -108,10 +106,9 @@ const LectureTab = ({ courseId, lectureId }) => {
 
   const removeLectureHandler = async (lectureId) => {
     try {
-      console.log("remove the lecture");
       await deleteLecture(lectureId);
     } catch (err) {
-      console.log(err);
+      toast.error(err.message || "something wrong with deleting the lecture");
     }
   };
 

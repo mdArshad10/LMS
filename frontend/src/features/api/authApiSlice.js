@@ -1,3 +1,4 @@
+import { toast } from "sonner";
 import { userLoggedIn, userLoggedOut } from "../authSlice";
 import { basicApi } from "../basicApiSlice";
 
@@ -20,11 +21,13 @@ const authApiSlice = basicApi.injectEndpoints({
       async onQueryStarted(_, { queryFulfilled, dispatch }) {
         try {
           const response = await queryFulfilled;
-          console.log(response.data.data);
 
           dispatch(userLoggedIn({ user: response.data }));
-        } catch (error) {
-          console.log(error);
+        } catch (err) {
+
+          toast.error(
+            err.error?.data?.message || "Login failed. Please try again."
+          );
         }
       },
     }),
@@ -37,8 +40,10 @@ const authApiSlice = basicApi.injectEndpoints({
         try {
           const response = await queryFulfilled;
           dispatch(userLoggedOut());
-        } catch (error) {
-          console.log(error);
+        } catch (err) {
+          toast.error(
+            err.error?.data?.message || "logout failed. Please try again."
+          );
         }
       },
     }),
@@ -59,8 +64,8 @@ const authApiSlice = basicApi.injectEndpoints({
         try {
           const response = await queryFulfilled;
           dispatch(userLoggedIn(response.data.user));
-        } catch (error) {
-          console.log(error);
+        } catch (err) {
+          console.log(err.error?.data?.message);
         }
       },
     }),

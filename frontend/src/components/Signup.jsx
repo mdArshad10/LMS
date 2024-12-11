@@ -15,13 +15,15 @@ import { Loader2 } from "lucide-react";
 import { useRegisterMutation } from "@/features/api/authApiSlice";
 import { useEffect } from "react";
 import { toast } from "sonner";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { userLoggedIn } from "../features/authSlice";
 
 const Signup = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || "/";
   const [
     userRegister,
     { error: registerError, isLoading, isSuccess, data: registerData },
@@ -35,7 +37,6 @@ const Signup = () => {
 
   const signupHandler = async (data) => {
     const response = await userRegister(data).unwrap();
-    console.log(response);
 
     dispatch(userLoggedIn(response.user));
     reset();
@@ -44,13 +45,10 @@ const Signup = () => {
   useEffect(() => {
     if (isSuccess && registerData) {
       toast.success(userRegister.message);
-      navigate("/");
+      navigate(from, { replace: true });
     }
 
-    if (registerError) {
-      toast.error(registerError.message);
-    }
-  }, [isLoading, registerError, isSuccess, registerData]);
+  }, [isLoading, isSuccess, registerData]);
 
   return (
     <form onSubmit={handleSubmit(signupHandler)}>

@@ -30,6 +30,7 @@ import { useEffect } from "react";
 import { toast } from "sonner";
 import { courseCategories, courseDifficulties } from "@/app/data";
 import { Loader2 } from "lucide-react";
+import SpinnerLoading from "../SpinnerLoading";
 
 const CourseTabTry = () => {
   const { courseId } = useParams();
@@ -75,7 +76,6 @@ const CourseTabTry = () => {
 
   const onSubmit = async (data) => {
     try {
-      console.log(data);
       const formData = new FormData();
       formData.append("thumbnail", data.thumbnail);
       formData.append("courseTitle", data.courseTitle);
@@ -86,12 +86,8 @@ const CourseTabTry = () => {
       formData.append("courseLevel", data.courseLevel);
 
       await editCourse({ formData, courseId });
-      if (editCourseSuccess) {
-        navigate("/admin/course");
-      }
     } catch (err) {
-      console.log(err);
-      console.log(editCourseErrorData);
+      toast.error(err.message || "something wrong with course updating");
     }
   };
 
@@ -100,7 +96,7 @@ const CourseTabTry = () => {
       console.log(`${courseId} is published or unpublished`);
       //await togglePublishCourse();
     } catch (err) {
-      console.log(err);
+      toast.error(err.message || "something wrong with toggle this course");
     }
   };
 
@@ -108,8 +104,7 @@ const CourseTabTry = () => {
     try {
       await deleteCourses(courseId);
     } catch (err) {
-      console.log(err);
-      console.log(error);
+      toast.error(err.message || "something wrong with delete this course");
     }
   };
 
@@ -152,7 +147,7 @@ const CourseTabTry = () => {
   ]);
 
   return loadingCourseByCourseId ? (
-    <p>Loading...</p>
+    <SpinnerLoading/>
   ) : (
     <Card>
       <CardHeader className="flex flex-row justify-between">

@@ -15,8 +15,11 @@ const AvatarImage = React.forwardRef(({ className, ...props }, ref) => (
   <AvatarPrimitive.Image
     ref={ref}
     className={cn("aspect-square h-full w-full", className)}
-    {...props} />
-))
+    crossOrigin="anonymous" // Add this line
+    referrerPolicy="no-referrer" // Add this line
+    {...props}
+  />
+));
 AvatarImage.displayName = AvatarPrimitive.Image.displayName
 
 const AvatarFallback = React.forwardRef(({ className, ...props }, ref) => (

@@ -9,9 +9,12 @@ import { errorHandler } from './middlewares/errorHandler.js';
 import { StatusCodes } from 'http-status-codes';
 import mongoSanitize from 'express-mongo-sanitize';
 import { rateLimit } from 'express-rate-limit';
-import { POSTMAN_URL } from './constants.js';
+import { POSTMAN_URL, NODE_ENV } from './constants.js';
+import path from 'node:path';
 
 const app = express();
+
+const __dirname = path.resolve();
 
 const limiter = rateLimit({
 	windowMs: 15 * 60 * 1000, // 15 minutes
@@ -24,7 +27,30 @@ const limiter = rateLimit({
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(express.json());
 app.use(morgan('dev'));
-app.use(helmet());
+app.use(
+	helmet({
+		contentSecurityPolicy: {
+			directives: {
+				defaultSrc: ["'self'"],
+				mediaSrc: [
+					"'self'",
+					'http://res.cloudinary.com',
+					'https://res.cloudinary.com',
+					'https://*.cloudinary.com',
+				],
+				imgSrc: [
+					"'self'",
+					'data:',
+					'https://res.cloudinary.com',
+					'https://*.cloudinary.com',
+				],
+				scriptSrc: ["'self'", "'unsafe-inline'"],
+				styleSrc: ["'self'", "'unsafe-inline'"],
+				connectSrc: ["'self'"],
+			},
+		},
+	}),
+);
 app.use(cookieParser());
 app.use(
 	cors({
@@ -42,7 +68,7 @@ app.use(mongoSanitize());
 // app.use(limiter);
 
 // middlewares
-app.get('/', (req, res, next) => {
+app.get('/api/v1', (req, res, next) => {
 	if (POSTMAN_URL) {
 		return res.redirect(`${POSTMAN_URL}`);
 	}
@@ -54,11 +80,19 @@ app.get('/', (req, res, next) => {
 
 app.use('/api', routes);
 app.use(errorHandler);
-app.use('*', (req, res, next) => {
+app.use('/api/*', (req, res, next) => {
 	res.status(StatusCodes.NOT_FOUND).json({
 		success: false,
 		message: 'Page not found',
 	});
 });
+
+if (NODE_ENV === 'production') {
+	app.use(express.static(path.join(__dirname, '../frontend/dist')));
+
+	app.get('*', (req, res, next) => {
+		res.sendFile(path.join(__dirname, '../frontend', 'dist', 'index.html'));
+	});
+}
 
 export default app;

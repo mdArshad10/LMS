@@ -24,9 +24,6 @@ import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { courseCategories } from "@/app/data";
 
-
-
-
 const AddCoursePage = () => {
   const navigate = useNavigate();
   const form = useForm({
@@ -38,7 +35,6 @@ const AddCoursePage = () => {
 
   const createCourseHandler = async (data) => {
     try {
-      console.log(data);
       await createCourse(data).unwrap();
       navigate("/admin/course");
       form.reset({
@@ -46,8 +42,7 @@ const AddCoursePage = () => {
         category: "",
       });
     } catch (err) {
-      console.log(err);
-      console.log(error);
+      toast.error(err.message || "create course failed. Please try again.");
     }
   };
 

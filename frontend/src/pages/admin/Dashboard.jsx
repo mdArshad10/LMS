@@ -1,4 +1,5 @@
 import PageHeader from "@/components/PageHeader";
+import SpinnerLoading from "@/components/SpinnerLoading";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useGetAllPurchasesCourseQuery } from "@/features/api/purchaseApiSlice";
 import {
@@ -15,10 +16,8 @@ const Dashboard = () => {
 
   const { data, isLoading, isError } = useGetAllPurchasesCourseQuery();
 
-
   const { purchasedCourse } = data || [];
   
-
   const courseData = purchasedCourse?.map((course) => ({
     name: course?.courseId?.courseTitle,
     price: course?.courseId?.coursePrice,
@@ -38,7 +37,7 @@ const Dashboard = () => {
         description="This the admin dashboard"
       />
       {isLoading ? (
-        <h1>Loading...</h1>
+        <SpinnerLoading/>
       ) : isError ? (
         <h1 className="text-red-500">Failed to get purchased course</h1>
       ) : (

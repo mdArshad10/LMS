@@ -1,6 +1,5 @@
-import React from "react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { Avatar, AvatarImage } from "../ui/avatar";
 import { Badge } from "../ui/badge";
 import { Link } from "react-router-dom";
 
@@ -14,6 +13,7 @@ const Course = ({ course }) => {
             src={course.courseThumbnail?.url || "https://github.com/shadcn.png"}
             alt="course"
             className="w-full h-36 object-cover rounded-t-lg"
+            crossOrigin="anonymous"
           />
         </CardHeader>
         <CardContent>
@@ -29,6 +29,7 @@ const Course = ({ course }) => {
                     "https://github.com/shadcn.png"
                   }
                   alt={course.creator?.name}
+                  crossOrigin="anonymous"
                 />
               </Avatar>
 

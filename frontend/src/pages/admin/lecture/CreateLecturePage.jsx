@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Loader2 } from "lucide-react";
-import { useEffect} from "react";
+import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import {
@@ -26,16 +26,12 @@ const CreateLecturePage = () => {
     refetch,
   } = useGetCourseAllLecturesQuery(courseId);
 
-  // console.log(getLectureData);
-
   const createLectureHandler = async (data) => {
     try {
-      console.log(data);
       await createLecture({ data, courseId });
       reset();
     } catch (err) {
-      console.log(err);
-      console.log(error);
+      toast.error(err.message || "creating lecture failed. Please try again.");
     }
   };
 

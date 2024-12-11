@@ -14,7 +14,9 @@ import { DropdownMenuGroup } from "@radix-ui/react-dropdown-menu";
 import DarkMode from "./DarkMode";
 import {
   Sheet,
+  SheetClose,
   SheetContent,
+  SheetFooter,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
@@ -32,7 +34,11 @@ const Navbar = () => {
   const navigate = useNavigate();
 
   const logoutHandler = async () => {
-    await logout();
+    try {
+      await logout();
+    } catch (error) {
+      toast.error(error.message || "logout Failed, plz try again");
+    }
   };
 
   useEffect(() => {
@@ -62,6 +68,7 @@ const Navbar = () => {
                   <AvatarImage
                     src={user?.photoUrl?.url || "https://github.com/shadcn.png"}
                     alt="@shadcn"
+                    crossOrigin="anonymous"
                   />
                   <AvatarFallback>CN</AvatarFallback>
                 </Avatar>
@@ -81,10 +88,11 @@ const Navbar = () => {
                   </DropdownMenuItem>
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />
-
-                <DropdownMenuItem>
-                  <Link to={"admin"}>Dashboard</Link>
-                </DropdownMenuItem>
+                {user.role === "instructor" ? (
+                  <DropdownMenuItem>
+                    <Link to={"admin"}>Dashboard</Link>
+                  </DropdownMenuItem>
+                ) : null}
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
@@ -105,12 +113,19 @@ const Navbar = () => {
       </div>
 
       {/* for mobile */}
-      {/* <MobileNavbar /> */}
+      <div className="flex md:hidden items-center justify-between px-4 h-full">
+        <Link to={"/"} className="flex items-center gap-2">
+          <School size={30} />
+          <h1 className=" block font-extrabold text-2xl">E-Learning</h1>
+        </Link>
+        <MobileNavbar user={user} logoutHandler={logoutHandler} />
+      </div>
     </div>
   );
 };
 
-const MobileNavbar = () => {
+const MobileNavbar = ({ user, logoutHandler }) => {
+  const navigate = useNavigate();
   return (
     <Sheet>
       <SheetTrigger asChild>
@@ -125,18 +140,36 @@ const MobileNavbar = () => {
       <SheetContent className="flex flex-col">
         <SheetHeader className="flex flex-row items-center justify-between mt-2">
           <SheetTitle>
-            {" "}
-            <Link to="/">E-Learning</Link>
+            <School size={30} />
+            <h1 className="hidden md:block font-extrabold text-2xl">
+              E-Learning
+            </h1>
           </SheetTitle>
           <DarkMode />
         </SheetHeader>
         <Separator className="mr-2" />
         <nav className="flex flex-col space-y-4">
-          <Link to="/my-learning">My Learning</Link>
-          <Link to="/profile">Edit Profile</Link>
-          <p>Log out</p>
+          {user ? (
+            <>
+              <Link to="/my-learning">My Learning</Link>
+              <Link to="/profile">Edit Profile</Link>
+              <Button onClick={logoutHandler}>Logout</Button>
+            </>
+          ) : (
+            <>
+              <Button
+                variant="outline"
+                onClick={() => navigate("login", { state: "login" })}
+              >
+                Login
+              </Button>
+              <Button onClick={() => navigate("login", { state: "signup" })}>
+                Signup
+              </Button>
+            </>
+          )}
         </nav>
-        {/* {user?.role === "instructor" && (
+        {user?.role === "instructor" && (
           <SheetFooter>
             <SheetClose asChild>
               <Button
@@ -147,7 +180,7 @@ const MobileNavbar = () => {
               </Button>
             </SheetClose>
           </SheetFooter>
-        )} */}
+        )}
       </SheetContent>
     </Sheet>
   );

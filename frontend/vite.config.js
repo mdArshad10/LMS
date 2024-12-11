@@ -9,4 +9,10 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  server: {
+    headers: {
+      "Content-Security-Policy":
+        "img-src 'self' data: https://res.cloudinary.com",
+    },
+  },
 });

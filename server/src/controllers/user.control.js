@@ -101,6 +101,7 @@ const getUser = AsyncHandler(async (req, res, next) => {
 			populate: {
 				path: 'creator',
 				model: 'User',
+				select: 'name photoUrl',
 			},
 		})
 		.exec();
@@ -117,7 +118,6 @@ const getUser = AsyncHandler(async (req, res, next) => {
 // @ACCESS: private
 const updateUser = AsyncHandler(async (req, res, next) => {
 	const { name } = req.body;
-	console.log(name);
 
 	const profileUrl = req.file?.path;
 	// check the file

@@ -1,3 +1,4 @@
+const NODE_ENV = process.env.NODE_ENV;
 const PORT = process.env.PORT;
 const MONGO_URL = process.env.MONGO_URL;
 const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET;
@@ -16,6 +17,7 @@ const STRIPE_PUBLISHABLE_KEY = process.env.STRIPE_PUBLISHABLE_KEY;
 const WEBHOOK_ENDPOINT_SECRET = process.env.WEBHOOK_ENDPOINT_SECRET;
 
 export {
+	NODE_ENV,
 	PORT,
 	MONGO_URL,
 	ACCESS_TOKEN_SECRET,

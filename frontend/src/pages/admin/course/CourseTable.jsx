@@ -14,26 +14,22 @@ import { useGetCreatorCourseQuery } from "@/features/api/courseApiSlice";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { Edit } from "lucide-react";
+import SpinnerLoading from "@/components/SpinnerLoading";
 
 const CourseTable = () => {
   const navigate = useNavigate();
 
-  const { data, isLoading, isSuccess, error, refetch } =
+  const { data, isLoading, isError, error, refetch } =
     useGetCreatorCourseQuery();
 
   useEffect(() => {
     refetch();
   }, []);
 
-  useEffect(() => {
-    if (isSuccess) {
-      toast.success("Course Created Successfully");
-      navigate("/admin/course");
-    }
-  }, [isSuccess, error]);
-
   return isLoading ? (
-    <p>...Loading</p>
+    <SpinnerLoading/>
+  ) : isError ? (
+    <p>Something wrong with fetching courses</p>
   ) : (
     <div>
       <Button onClick={() => navigate("create")}>Create a New Course</Button>

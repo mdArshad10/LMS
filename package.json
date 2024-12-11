@@ -1,0 +1,21 @@
+{
+  "name": "lms",
+  "version": "1.0.0",
+  "description": "A digital marketplace where educators create, publish, and monetize comprehensive online courses across diverse domains, enabling learners to discover, purchase, and consume high-quality educational content.",
+  "main": "index.js",
+  "scripts": {
+    "build": "npm install --prefix server && npm install --prefix frontend && npm run build --prefix frontend",
+    "start": "npm run start --prefix server"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mdArshad10/LMS.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mdArshad10/LMS/issues"
+  },
+  "homepage": "https://github.com/mdArshad10/LMS#readme"
+}

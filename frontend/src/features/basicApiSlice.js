@@ -1,11 +1,11 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-
-export const baseUrl = `${import.meta.env.VITE_BACKEND_URL}/api/v1`;
+import { baseUrl } from "@/app/data";
 
 export const basicApi = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl,
     credentials: "include",
+    tagTypes: ["Refetch_Creator_Course", "Refetch_Lecture"],
     prepareHeaders: (Headers) => {
       const token = localStorage.getItem("token");
       if (token) {

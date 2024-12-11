@@ -7,24 +7,18 @@ import { useNavigate } from "react-router-dom";
 
 const BuyCoursePurchaseButton = ({ courseId }) => {
   const navigate = useNavigate();
-  console.log(courseId);
 
   const [
     createCheckoutSessions,
     { isLoading, isError, isSuccess, error, data },
   ] = useCreateCheckoutSessionsMutation();
 
-  const purchaseCourseHandler = async () => {
+  const purchaseCourseHandler = async (courseId) => {
     try {
-      console.log(courseId);
+      await createCheckoutSessions({ courseId });
 
-      const response = await createCheckoutSessions({courseId});
-      console.log(response);
-
-      // navigate()
     } catch (err) {
-      console.log(err);
-      console.log(error);
+      toast.error(err.message || "something in creating checkout session");
     }
   };
 
@@ -37,14 +31,14 @@ const BuyCoursePurchaseButton = ({ courseId }) => {
       }
     }
     if (isError) {
-      toast.error(error.message);
+      toast.error(error.message || "something wrong with stripe");
     }
   }, [data, error, isError, isSuccess]);
 
   return (
     <Button
       disabled={isLoading}
-      onClick={purchaseCourseHandler}
+      onClick={() => purchaseCourseHandler(courseId)}
       className="w-full"
     >
       {isLoading ? (

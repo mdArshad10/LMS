@@ -130,9 +130,10 @@ const stripeWebhook = AsyncHandler(async (req, res, next) => {
 			// Update course to add user ID to enrolledStudents
 			await Courses.findByIdAndUpdate(
 				purchase.courseId._id,
-				{ $addToSet: { enrolledStudents: purchase.userId } }, // Add user ID to enrolledStudents
+				{ $addToSet: { enrolledStudent: purchase.userId } }, // Add user ID to enrolledStudents
 				{ new: true },
 			);
+			
 		} catch (error) {
 			console.error('Error handling event:', error);
 			return res.status(500).json({ message: 'Internal Server Error' });
@@ -147,7 +148,7 @@ const stripeWebhook = AsyncHandler(async (req, res, next) => {
 const getCourseDetailWithPurchasedStatus = AsyncHandler(
 	async (req, res, next) => {
 		const { courseId } = req.params;
-		console.log(req.user);
+		
 
 		const userId = req.user._id;
 		const course = await Courses.findById(courseId)

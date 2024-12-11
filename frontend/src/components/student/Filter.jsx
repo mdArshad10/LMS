@@ -1,4 +1,4 @@
-import React from "react";
+import { useState } from "react";
 import {
   Select,
   SelectContent,
@@ -11,30 +11,32 @@ import {
 import { Separator } from "../ui/separator";
 import { Checkbox } from "../ui/checkbox";
 import { Label } from "../ui/label";
+import { courseCategories } from "@/app/data";
 
-const categories = [
-  { id: "nextjs", label: "Next JS" },
-  { id: "data science", label: "Data Science" },
-  { id: "frontend development", label: "Frontend Development" },
-  { id: "fullstack development", label: "Fullstack Development" },
-  { id: "mern stack development", label: "MERN Stack Development" },
-  { id: "backend development", label: "Backend Development" },
-  { id: "javascript", label: "Javascript" },
-  { id: "python", label: "Python" },
-  { id: "docker", label: "Docker" },
-  { id: "mongodb", label: "MongoDB" },
-  { id: "html", label: "HTML" },
-  { id: "reactjs", label: "React JS" },
-];
 const Filter = ({ handleFilterChanges }) => {
+  const [selectedCategories, setSelectedCategories] = useState([]);
+  const [sortByPrice, setSortByPrice] = useState("");
+
   const handleCategoryChange = (categoryId) => {
-    console.log(categoryId);
+    setSelectedCategories((prevSelectedCategories) => {
+      const newCategories = prevSelectedCategories.includes(categoryId)
+        ? selectedCategories.filter((id) => id !== categoryId)
+        : [...prevSelectedCategories, categoryId];
+      handleFilterChanges(newCategories, sortByPrice);
+      return newCategories;
+    });
   };
+
+  const handleSortByPriceChange = (selectedValue) => {
+    setSortByPrice(selectedValue);
+    handleFilterChanges(selectedCategories, selectedValue);
+  };
+
   return (
     <div className="w-full md:w-[20%]">
       <div className="flex items-center justify-between">
         <h1 className="font-semibold text-lg md:text-xl">Filter Options</h1>
-        <Select>
+        <Select onValueChange={handleSortByPriceChange}>
           <SelectTrigger>
             <SelectValue placeholder="Sort By" />
           </SelectTrigger>
@@ -50,13 +52,17 @@ const Filter = ({ handleFilterChanges }) => {
       <Separator />
       <div>
         <h1 className="font-semibold mb-2">Categories</h1>
-        {categories.map((category, index) => (
+        {courseCategories.map((category, index) => (
           <div key={index} className="flex items-center space-x-2 my-2">
             <Checkbox
               id={category.id}
               onCheckedChange={() => handleCategoryChange(category.id)}
+              className="rounded-none p-0"
             />
-            <Label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+            <Label
+              htmlFor={category.id}
+              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+            >
               {category.label}
             </Label>
           </div>

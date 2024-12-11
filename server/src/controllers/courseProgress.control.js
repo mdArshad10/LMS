@@ -64,7 +64,7 @@ const updateLectureProgress = AsyncHandler(async (req, res, next) => {
 		});
 	}
 
-	console.log(courseProgress);
+	
 
 	// find the lecture progress in the course progress
 	const lectureIndex = courseProgress.lectureProgress?.findIndex(

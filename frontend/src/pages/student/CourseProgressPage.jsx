@@ -54,14 +54,15 @@ const CourseProgressPage = () => {
 
   const handleLectureProgress = async (lectureId) => {
     try {
-      console.log(lectureId);
       await updateLectureProgress({ lectureId, courseId });
     } catch (err) {
-      console.log(err);
+      toast.error(
+        err.message || "Failed to update lecture progress, plz try again"
+      );
     }
   };
 
-  const { courseDetails, progress } = getCourseDetail?.data;
+  const { courseDetails, progress } = getCourseDetail.data;
 
   const initialLecture =
     currentLecture || (courseDetails.lectures && courseDetails.lectures[0]);
@@ -80,23 +81,22 @@ const CourseProgressPage = () => {
 
   const handleInCompleteCourse = async () => {
     try {
-      console.log("calling the handle incomplete course");
-
       await markCourseInComplete(courseId);
     } catch (err) {
-      console.log(err);
+      toast.error(
+        err.message || "Failed to mark course as incomplete. Please try again."
+      );
     }
   };
   const handleCompleteCourse = async () => {
     try {
-      console.log("calling the handle complete course");
-
       await markCourseCompleted(courseId);
     } catch (err) {
-      console.log(err);
+      toast.error(
+        err.message || "Failed to mark course as complete. Please try again."
+      );
     }
   };
-  console.log(getCourseDetail.data.completed);
 
   return (
     <>
@@ -112,8 +112,8 @@ const CourseProgressPage = () => {
           <Button
             onClick={
               getCourseDetail.data.completed
-                ? handleInCompleteCourse
-                : handleCompleteCourse
+                ? () => handleInCompleteCourse
+                : () => handleCompleteCourse
             }
             variant={getCourseDetail.data?.completed ? "outline" : "default"}
           >

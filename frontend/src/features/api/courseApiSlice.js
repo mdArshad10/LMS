@@ -8,12 +8,14 @@ const courseApiSlice = basicApi.injectEndpoints({
         method: "POST",
         body: data,
       }),
+      invalidatesTags: ["Refetch_Creator_Course"],
     }),
     getCreatorCourse: build.query({
       query: () => ({
         url: "/courses",
         method: "GET",
       }),
+      providesTags: ["Refetch_Creator_Course"],
     }),
     togglePublishCourse: build.mutation({
       query: (data) => ({
@@ -40,17 +42,36 @@ const courseApiSlice = basicApi.injectEndpoints({
         url: `/courses/${courseId}`,
         method: "PUT",
         body: formData,
-        headers: {
-          "content-type": "multipart/form-data",
-        },
-        credentials: "include",
       }),
+      invalidatesTags: ["Refetch_Creator_Course"],
     }),
     deleteCourses: build.mutation({
       query: (courseId) => ({
         url: `/courses/${courseId}`,
         method: "DELETE",
       }),
+    }),
+    searchCourse: build.query({
+      query: ({ searchQuery, categories, sortByPrice }) => {
+        let queryString = `/courses/search?query=${encodeURIComponent(
+          searchQuery
+        )}`;
+
+        if (categories && categories.length > 0) {
+          const categoriesString = categories.map(encodeURIComponent).join(",");
+          queryString += `&category=${categoriesString}`;
+        }
+
+        // Append sortByPrice is available
+        if (sortByPrice) {
+          queryString += `&sortByPrice=${encodeURIComponent(sortByPrice)}`;
+        }
+
+        return {
+          url: queryString,
+          method: "GET",
+        };
+      },
     }),
 
     // ===== lecture Routes ======
@@ -67,6 +88,7 @@ const courseApiSlice = basicApi.injectEndpoints({
         url: `/courses/${courseId}/lectures`,
         method: "GET",
       }),
+      providesTags: ["Refetch_Lecture"],
     }),
 
     getParticularLecture: build.query({
@@ -90,6 +112,7 @@ const courseApiSlice = basicApi.injectEndpoints({
         method: "DELETE",
         body: data,
       }),
+      invalidatesTags: ["Refetch_Lecture"],
     }),
   }),
 });
@@ -107,6 +130,7 @@ export const {
   useGetCourseAllLecturesQuery,
   useGetParticularLectureQuery,
   useDeleteCoursesMutation,
+  useSearchCourseQuery,
 } = courseApiSlice;
 
 // seGetCourseLectureQuery;

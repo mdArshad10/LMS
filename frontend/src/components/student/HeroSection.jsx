@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import React, { useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 
@@ -8,8 +8,10 @@ const HeroSection = () => {
   const { register, handleSubmit, reset } = useForm();
   const navigate = useNavigate();
   const searchHandler = async (data) => {
-    console.log(data);
-    navigate(`/search?q=${data.search}`);
+    
+    if (data.search.trim() !== "") {
+      navigate(`/course/search?query=${data.search}`);
+    }
     reset();
   };
   return (
@@ -38,7 +40,10 @@ const HeroSection = () => {
             Search
           </Button>
         </form>
-        <Button className="bg-white dark:bg-gray-800 text-blue-600 rounded-full hover:bg-gray-200">
+        <Button
+          className="bg-white dark:bg-gray-800 text-blue-600 rounded-full hover:bg-gray-200"
+          onClick={() => navigate("/course/search?query")}
+        >
           Explore Courses
         </Button>
       </div>
