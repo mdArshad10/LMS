@@ -1,5 +1,5 @@
 export const baseUrl =
-  import.meta.env.VITE_VITE_MODE === "development"
+  import.meta.env.VITE_MODE == "development"
     ? `${import.meta.env.VITE_BACKEND_URL}/api/v1`
     : "/api/v1";
 
@@ -17,9 +17,9 @@ export const courseCategories = [
   { id: "mern stack development", label: "MERN Stack Development" },
   { id: "backend development", label: "Backend Development" },
   { id: "javascript", label: "Javascript" },
-  { id: "python", label: "Python" },
+  { id: "nodejs", label: "Node JS" },
   { id: "docker", label: "Docker" },
   { id: "mongodb", label: "MongoDB" },
-  { id: "html", label: "HTML" },
   { id: "reactjs", label: "React JS" },
+  { id: "reduxjs", label: "Redux" },
 ];

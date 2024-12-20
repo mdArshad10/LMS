@@ -49,6 +49,7 @@ app.use(
 				connectSrc: ["'self'"],
 			},
 		},
+		csrf: true,
 	}),
 );
 app.use(cookieParser());

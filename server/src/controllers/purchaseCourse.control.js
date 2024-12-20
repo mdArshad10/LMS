@@ -82,7 +82,9 @@ const stripeWebhook = AsyncHandler(async (req, res, next) => {
 		event = stripe.webhooks.constructEvent(payloadString, header, secret);
 	} catch (error) {
 		console.error('Webhook error:', error.message);
-		return res.status(400).send(`Webhook error: ${error.message}`);
+		return res
+			.status(400)
+			.json({ message: `Webhook error: ${error.message}` });
 	}
 
 	// Handle the checkout session completed event
@@ -133,7 +135,6 @@ const stripeWebhook = AsyncHandler(async (req, res, next) => {
 				{ $addToSet: { enrolledStudent: purchase.userId } }, // Add user ID to enrolledStudents
 				{ new: true },
 			);
-			
 		} catch (error) {
 			console.error('Error handling event:', error);
 			return res.status(500).json({ message: 'Internal Server Error' });
@@ -148,7 +149,6 @@ const stripeWebhook = AsyncHandler(async (req, res, next) => {
 const getCourseDetailWithPurchasedStatus = AsyncHandler(
 	async (req, res, next) => {
 		const { courseId } = req.params;
-		
 
 		const userId = req.user._id;
 		const course = await Courses.findById(courseId)

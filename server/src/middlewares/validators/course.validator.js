@@ -77,10 +77,7 @@ export const courseValidator = {
 			.notEmpty()
 			.withMessage('Category is required.')
 			.escape(),
-		body('courseLevel')
-			.notEmpty()
-			.withMessage('course level is required')
-			.custom((value) => {}),
+		body('courseLevel').notEmpty().withMessage('course level is required'),
 		body('coursePrice')
 			.trim()
 			.toInt()
@@ -126,15 +123,6 @@ export const courseValidator = {
 			.isMongoId()
 			.withMessage('Invalid Lecture ID'),
 
-		body('lectureTitle')
-			.trim()
-			.notEmpty()
-			.withMessage('Lecture Title is required')
-			.isLength({ min: 5, max: 100 })
-			.withMessage(
-				'Lecture Title must be at least 5 characters and at most 100 characters',
-			)
-			.escape(),
 		body('videoUrl').isObject().withMessage('Video URL must be an object'),
 
 		body('videoUrl.url')
@@ -148,9 +136,7 @@ export const courseValidator = {
 			.notEmpty()
 			.withMessage('Video URL is required'),
 		body('isPreviewFree')
-			.trim()
-			.notEmpty()
-			.withMessage('Is Preview Free is required')
+			.default(false)
 			.isBoolean()
 			.withMessage('Is Preview Free must be a boolean value')
 			.escape(),

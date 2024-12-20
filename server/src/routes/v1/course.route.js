@@ -60,9 +60,9 @@ router
 	.put(
 		verifyUser,
 		verifyInstructor,
-		upload.single('thumbnail'),
 		courseValidator.editCourse,
 		validate,
+		upload.single('thumbnail'),
 		editCourse,
 	);
 

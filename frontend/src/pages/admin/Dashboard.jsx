@@ -37,7 +37,7 @@ const Dashboard = () => {
         description="This the admin dashboard"
       />
       {isLoading ? (
-        <SpinnerLoading/>
+        <SpinnerLoading />
       ) : isError ? (
         <h1 className="text-red-500">Failed to get purchased course</h1>
       ) : (
@@ -75,7 +75,7 @@ const Dashboard = () => {
                   <XAxis
                     dataKey="name"
                     stroke="#6b7280"
-                    angle={-30} // Rotated labels for better visibility
+                    angle={-25} // Rotated labels for better visibility
                     textAnchor="end"
                     interval={0}
                   />
