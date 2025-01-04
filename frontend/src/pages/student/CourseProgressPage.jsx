@@ -42,21 +42,7 @@ const CourseProgressPage = () => {
       toast.success("lecture progress updated successfully");
       refetch();
     }
-    if (LoadingMarkCourseCompletedSuccess) {
-      refetch();
-      toast.success("mark us completed");
-    }
-    if (loadingMarkCourseInCompletedSuccess) {
-      refetch();
-      toast.success("mark us in completed");
-    }
-  }, [
-    loadingMarkCourseInCompletedSuccess,
-    LoadingMarkCourseCompletedSuccess,
-    updateLectureProgressSuccess,
-  ]);
-
-  
+  }, [updateLectureProgressSuccess]);
 
   if (loadingCourseProgressDetail) return <p>Loading...</p>;
   if (loadingCourseProgressDetailError)
@@ -79,7 +65,6 @@ const CourseProgressPage = () => {
 
   const handleSelectLecture = (lecture) => {
     setCurrentLecture(lecture);
-    // handleLectureProgress(lecture._id);
   };
 
   const isLectureComplete = (lectureId) => {
@@ -92,6 +77,9 @@ const CourseProgressPage = () => {
   const handleInCompleteCourse = async () => {
     try {
       await markCourseInComplete(courseId);
+      console.log("course is Incompleted");
+      toast.success("mark us Incompleted");
+      refetch();
     } catch (err) {
       toast.error(
         err.message || "Failed to mark course as incomplete. Please try again."
@@ -101,6 +89,8 @@ const CourseProgressPage = () => {
   const handleCompleteCourse = async () => {
     try {
       await markCourseCompleted(courseId);
+      toast.success("mark us completed");
+      refetch();
     } catch (err) {
       toast.error(
         err.message || "Failed to mark course as complete. Please try again."
@@ -121,9 +111,9 @@ const CourseProgressPage = () => {
           <h1 className="text-2xl font-bold">{courseDetails.courseTitle}</h1>
           <Button
             onClick={
-              getCourseDetail.data.completed
-                ? () => handleInCompleteCourse
-                : () => handleCompleteCourse
+              getCourseDetail.data?.completed
+                ? handleInCompleteCourse
+                : handleCompleteCourse
             }
             variant={getCourseDetail.data?.completed ? "outline" : "default"}
           >
@@ -188,7 +178,8 @@ const CourseProgressPage = () => {
                 >
                   <CardContent className="flex items-center justify-between p-4">
                     <div className="flex items-center">
-                      {isLectureComplete(lecture._id) ? (
+                      {isLectureComplete(lecture._id) ||
+                      getCourseDetail.data?.completed ? (
                         <CheckCircle2
                           size={24}
                           className="text-green-500 mr-2"
