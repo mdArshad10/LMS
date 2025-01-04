@@ -18,7 +18,6 @@ const CourseProgressPage = () => {
   const { courseId } = useParams();
   const [currentLecture, setCurrentLecture] = useState(null);
 
-  const courseWatchingComplete = true;
   const [
     markCourseInComplete,
     { isSuccess: LoadingMarkCourseCompletedSuccess },
@@ -35,7 +34,14 @@ const CourseProgressPage = () => {
     refetch,
   } = useGetCourseProgressQuery(courseId);
 
+  const [updateLectureProgress, { isSuccess: updateLectureProgressSuccess }] =
+    useUpdateLectureProgressMutation();
+
   useEffect(() => {
+    if (updateLectureProgressSuccess) {
+      toast.success("lecture progress updated successfully");
+      refetch();
+    }
     if (LoadingMarkCourseCompletedSuccess) {
       refetch();
       toast.success("mark us completed");
@@ -44,9 +50,13 @@ const CourseProgressPage = () => {
       refetch();
       toast.success("mark us in completed");
     }
-  }, [loadingMarkCourseInCompletedSuccess, LoadingMarkCourseCompletedSuccess]);
+  }, [
+    loadingMarkCourseInCompletedSuccess,
+    LoadingMarkCourseCompletedSuccess,
+    updateLectureProgressSuccess,
+  ]);
 
-  const [updateLectureProgress] = useUpdateLectureProgressMutation();
+  
 
   if (loadingCourseProgressDetail) return <p>Loading...</p>;
   if (loadingCourseProgressDetailError)
@@ -178,7 +188,7 @@ const CourseProgressPage = () => {
                 >
                   <CardContent className="flex items-center justify-between p-4">
                     <div className="flex items-center">
-                      {courseWatchingComplete ? (
+                      {isLectureComplete(lecture._id) ? (
                         <CheckCircle2
                           size={24}
                           className="text-green-500 mr-2"

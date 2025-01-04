@@ -20,7 +20,7 @@ router
 		getCourseProgress,
 	);
 router
-	.route('/:courseId/lecture/:lectureId/view')
+	.route('/:courseId/lectures/:lectureId/view')
 	.post(
 		verifyUser,
 		courseProgressValidator.updateLectureProgress,
