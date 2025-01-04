@@ -91,10 +91,10 @@ const CourseTabTry = () => {
     }
   };
 
-  const ontoggleParticularCourse = async (courseId) => {
+  const ontoggleParticularCourse = async (courseId, isPublished) => {
     try {
       console.log(`${courseId} is published or unpublished`);
-      //await togglePublishCourse();
+      await togglePublishCourse({ courseId, isPublished: !isPublished });
     } catch (err) {
       toast.error(err.message || "something wrong with toggle this course");
     }
@@ -147,7 +147,7 @@ const CourseTabTry = () => {
   ]);
 
   return loadingCourseByCourseId ? (
-    <SpinnerLoading/>
+    <SpinnerLoading />
   ) : (
     <Card>
       <CardHeader className="flex flex-row justify-between">
@@ -161,7 +161,10 @@ const CourseTabTry = () => {
           <Button
             variant="outline"
             onClick={() =>
-              ontoggleParticularCourse(courseDataGetByCourseId.course?._id)
+              ontoggleParticularCourse(
+                courseDataGetByCourseId.course?._id,
+                courseDataGetByCourseId.course?.isPublished
+              )
             }
           >
             {loadingTogglePublishCourse ? (
@@ -267,11 +270,8 @@ const CourseTabTry = () => {
                         <SelectContent>
                           <SelectGroup>
                             <SelectLabel>Category</SelectLabel>
-                            {courseCategories.map((category) => (
-                              <SelectItem
-                                key={category.label + category.value}
-                                value={category.value}
-                              >
+                            {courseCategories.map((category, index) => (
+                              <SelectItem key={index} value={category.id}>
                                 {category.label}
                               </SelectItem>
                             ))}
@@ -301,11 +301,8 @@ const CourseTabTry = () => {
                       <SelectContent>
                         <SelectGroup>
                           <SelectLabel>Course Level</SelectLabel>
-                          {courseDifficulties.map((course) => (
-                            <SelectItem
-                              key={course.label + course.value}
-                              value={course.value}
-                            >
+                          {courseDifficulties.map((course, index) => (
+                            <SelectItem key={index} value={course.value}>
                               {course.label}
                             </SelectItem>
                           ))}

@@ -67,7 +67,7 @@ const getPublishedCourse = AsyncHandler(async (req, res, next) => {
 // @METHOD: [GET]   /api/v1/courses/published
 // @ACCESS: private
 const searchCourse = AsyncHandler(async (req, res, next) => {
-	const { query = '', categories = [], sortByPrice = '' } = req.query;
+	const { query = '', category = [], sortByPrice = '' } = req.query;
 
 	// create search query
 	const searchCriteria = {
@@ -86,9 +86,10 @@ const searchCourse = AsyncHandler(async (req, res, next) => {
 	};
 
 	// if categories are selected
-	if (categories.length > 0) {
-		searchCriteria.category = { $in: categories };
+	if (category.length > 0) {
+		searchCriteria.category = { $in: category };
 	}
+	console.log(searchCriteria);
 	// define sorting order
 	const sortOptions = {};
 	if (sortByPrice === 'low') {
@@ -98,8 +99,9 @@ const searchCourse = AsyncHandler(async (req, res, next) => {
 	}
 
 	let courses = await Courses.find(searchCriteria)
-		.populate({ path: 'creator', select: 'name photoUrl' })
-		.sort(sortOptions);
+	.populate({ path: 'creator', select: 'name photoUrl' })
+	.sort(sortOptions);
+
 
 	return res.status(StatusCodes.OK).json({
 		success: true,

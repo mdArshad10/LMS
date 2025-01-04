@@ -15,6 +15,7 @@ const SearchCoursePage = () => {
   const [searchParam] = useSearchParams();
   const query = searchParam.get("query");
 
+
   const { data, isLoading } = useSearchCourseQuery({
     searchQuery: query,
     categories: selectedCategories,
@@ -25,7 +26,6 @@ const SearchCoursePage = () => {
     setSelectedCategories(categories);
     setSortByPrice(price);
   };
-
 
   return (
     <>

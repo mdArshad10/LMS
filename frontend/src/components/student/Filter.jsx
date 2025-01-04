@@ -12,16 +12,21 @@ import { Separator } from "../ui/separator";
 import { Checkbox } from "../ui/checkbox";
 import { Label } from "../ui/label";
 import { courseCategories } from "@/app/data";
+import { useSearchParams } from "react-router-dom";
 
 const Filter = ({ handleFilterChanges }) => {
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [sortByPrice, setSortByPrice] = useState("");
+  const [searchParam] = useSearchParams();
 
   const handleCategoryChange = (categoryId) => {
     setSelectedCategories((prevSelectedCategories) => {
       const newCategories = prevSelectedCategories.includes(categoryId)
         ? selectedCategories.filter((id) => id !== categoryId)
         : [...prevSelectedCategories, categoryId];
+
+
+
       handleFilterChanges(newCategories, sortByPrice);
       return newCategories;
     });
@@ -29,6 +34,8 @@ const Filter = ({ handleFilterChanges }) => {
 
   const handleSortByPriceChange = (selectedValue) => {
     setSortByPrice(selectedValue);
+    
+
     handleFilterChanges(selectedCategories, selectedValue);
   };
 
